@@ -10,12 +10,14 @@ import lombok.experimental.FieldDefaults;
 @Getter
 public class Agent {
 
+    private static final float ASSIMILATION_FACTOR = 0.01f;
+
     Point position;
 
     /**
      * number from -100 to 100
      */
-    byte culture;
+    float culture;
 
     float direction = 0;
     short stepsRemaining = 0;
@@ -27,10 +29,11 @@ public class Agent {
 
         int x = PrngHolder.randomInteger(0, playgroundSize);
         int y = PrngHolder.randomInteger(0, playgroundSize);
-        distancePerStep = playgroundSize / 500.0f;
+//        distancePerStep = playgroundSize / 500.0f;
+        distancePerStep = 0;
 
         position = new Point(x, y);
-        culture = PrngHolder.randomByte(-100, 100);
+        culture = PrngHolder.randomFloat(-100, 100);
     }
 
     public void move() {
@@ -51,6 +54,22 @@ public class Agent {
         position.setY(new_y);
 
         stepsRemaining--;
+    }
+
+    public void receiveMessage(Point positionOfSender, float cultureOfSender) {
+        culture += cultureOfSender * ASSIMILATION_FACTOR;
+        if (culture < -100) culture = -100;
+        if (culture > 100) culture = 100;
+
+        shift(positionOfSender, cultureOfSender);
+    }
+
+    private void shift(Point positionOfSender, float cultureOfSender) {
+        if (Math.signum(culture) == Math.signum(cultureOfSender)) {
+
+        } else {
+
+        }
     }
 
     private void resetTarget() {

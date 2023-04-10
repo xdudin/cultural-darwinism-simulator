@@ -66,16 +66,16 @@ public class SimulationPanel extends JPanel implements Runnable {
      * <br>
      * k-strategy blue color
      */
-    private Color computeColor(byte culture) {
+    private Color computeColor(float culture) {
         int red, green, blue;
 
         if (culture < 0) { // r-dominant
-            int color = 255 + culture * (255 / 100);
+            int color = (int) (255 + culture * (255 / 100));
             red = 255;
             green = color;
             blue = color;
         } else { // k-dominant
-            int color = 255 - culture * (255 / 100);
+            int color = (int) (255 - culture * (255 / 100));
             red = color;
             green = color;
             blue = 255;
