@@ -9,7 +9,7 @@ import javax.swing.UIManager;
 @Slf4j
 public class Main {
 
-    private static final int NUMBER_OF_AGENTS = 1;
+    private static final int NUMBER_OF_AGENTS = 2;
 
     private Main() {
         throw new AssertionError("Not initializable");

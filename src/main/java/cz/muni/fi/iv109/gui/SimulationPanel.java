@@ -52,8 +52,8 @@ public class SimulationPanel extends JPanel implements Runnable {
         simulation.getAgents().forEach(agent -> {
             g2.setColor(computeColor(agent.getCulture()));
 
-            int x = (int) agent.getPosition().getX();
-            int y = (int) agent.getPosition().getY();
+            int x = (int) agent.getPosition().getX() - agentRadius / 2;
+            int y = (int) agent.getPosition().getY() - agentRadius / 2;
             g2.fillOval(x, y, agentRadius, agentRadius);
         });
 
