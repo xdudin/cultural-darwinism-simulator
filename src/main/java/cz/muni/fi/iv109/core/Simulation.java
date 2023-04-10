@@ -28,6 +28,8 @@ public class Simulation {
     }
 
     public void doStep() {
+        agents.forEach(Agent::move);
+
         stepCounter++;
     }
 

@@ -9,13 +9,15 @@ import javax.swing.UIManager;
 @Slf4j
 public class Main {
 
+    private static final int NUMBER_OF_AGENTS = 1;
+
     private Main() {
         throw new AssertionError("Not initializable");
     }
 
     public static void main(String[] args) {
         initNimbusLookAndFeel();
-        UIBuilder.buildMainWindow(2).startSimulation();
+        UIBuilder.buildMainWindow(NUMBER_OF_AGENTS).startSimulation();
     }
 
     private static void initNimbusLookAndFeel() {

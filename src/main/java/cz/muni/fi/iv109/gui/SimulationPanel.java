@@ -8,6 +8,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
 
 public class SimulationPanel extends JPanel implements Runnable {
 
@@ -51,12 +52,13 @@ public class SimulationPanel extends JPanel implements Runnable {
         simulation.getAgents().forEach(agent -> {
             g2.setColor(computeColor(agent.getCulture()));
 
-            int x = agent.getPosition().x();
-            int y = agent.getPosition().y();
+            int x = (int) agent.getPosition().getX();
+            int y = (int) agent.getPosition().getY();
             g2.fillOval(x, y, agentRadius, agentRadius);
         });
 
         g2.dispose();
+        Toolkit.getDefaultToolkit().sync();
     }
 
     /**

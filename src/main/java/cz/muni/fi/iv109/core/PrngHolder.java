@@ -18,7 +18,14 @@ public class PrngHolder {
         return (byte) randomInteger(from, to);
     }
 
-    public static float randomFloat() {
-        return random.nextFloat();
+    public static float randomFloat(float from, float to) {
+        return random.nextFloat(from, to);
+    }
+
+    /**
+     * random direction within [0, 2pi] radians
+     */
+    public static float randomDirection() {
+        return randomFloat(0, (float) (Math.PI * 2));
     }
 }
