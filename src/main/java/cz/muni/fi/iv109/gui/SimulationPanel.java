@@ -19,12 +19,12 @@ public class SimulationPanel extends JPanel implements Runnable {
     private final Thread simulationThread;
     private final int agentRadius;
 
-    public SimulationPanel(int size, int numberOfAgents) {
-        simulation = new Simulation(size, numberOfAgents);
+    public SimulationPanel(int playgroundSize, int numberOfAgents) {
+        simulation = new Simulation(playgroundSize, numberOfAgents);
         simulationThread = new Thread(this);
         agentRadius = simulation.getPlaygroundSize() / 40;
 
-        this.setPreferredSize(new Dimension(size, size));
+        this.setPreferredSize(new Dimension(playgroundSize, playgroundSize));
         this.setBackground(Color.BLACK);
     }
 

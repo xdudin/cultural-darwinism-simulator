@@ -8,19 +8,19 @@ public class UIBuilder {
 
     public static MainWindow buildMainWindow(int numberOfAgents) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int simulationAreaSize = (int) (screenSize.getHeight() * 0.8);
+        int playgroundSize = (int) (screenSize.getHeight() * 0.8);
 
-        SimulationPanel simulationPanel = new SimulationPanel(simulationAreaSize, numberOfAgents);
+        SimulationPanel simulationPanel = new SimulationPanel(playgroundSize, numberOfAgents);
 
-        return new MainWindow(simulationPanel, calculateCornerLocation(screenSize, simulationAreaSize));
+        return new MainWindow(simulationPanel, calculateCornerLocation(screenSize, playgroundSize));
     }
 
-    private static Point calculateCornerLocation(Dimension screenSize, int simulationAreaSize) {
+    private static Point calculateCornerLocation(Dimension screenSize, int playgroundSize) {
         int center_x = (int) (screenSize.getWidth() / 2);
         int center_y = (int) (screenSize.getHeight() / 2);
 
-        int corner_x = center_x - (simulationAreaSize / 2);
-        int corner_y = center_y - (simulationAreaSize / 2) - 20; // munis title bar height
+        int corner_x = center_x - (playgroundSize / 2);
+        int corner_y = center_y - (playgroundSize / 2) - 20; // munis title bar height
 
         return new Point(corner_x, corner_y);
     }
