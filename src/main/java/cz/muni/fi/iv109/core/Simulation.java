@@ -1,9 +1,11 @@
 package cz.muni.fi.iv109.core;
 
+import cz.muni.fi.iv109.core.util.Vector;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -11,7 +13,7 @@ import java.util.List;
 public class Simulation {
 
     public static final float PLAYGROUND_SIZE = 100f;
-    private static final float COMMUNICATION_RADIUS = 10f;
+    private static final float COMMUNICATION_RADIUS = 2f;
 
     private final List<Agent> agents = new ArrayList<>();
     private int stepCounter = 0;
@@ -22,6 +24,10 @@ public class Simulation {
         }
     }
 
+    public Simulation(Agent... agents) {
+        this.agents.addAll(Arrays.asList(agents));
+    }
+
     public void doStep() {
         agents.forEach(Agent::move);
 
@@ -30,16 +36,16 @@ public class Simulation {
         for (Agent agent : agents) {
             for (Agent candidate : agents) {
                 if (agent != candidate &&
-                    candidate.getPosition().distance(agent.getPosition()) < COMMUNICATION_RADIUS)
+                    Vector.distance(candidate.getPosition(), agent.getPosition()) < COMMUNICATION_RADIUS)
                 {
                     candidate.receiveMessage(agent.getPosition(), agent.getCulture());
                 }
             }
         }
 
-        System.out.print(agents.get(0));
-        System.out.print("   ");
-        System.out.println(agents.get(1));
+//        System.out.print(agents.get(0));
+//        System.out.print("   ");
+//        System.out.println(agents.get(1));
 
         stepCounter++;
     }

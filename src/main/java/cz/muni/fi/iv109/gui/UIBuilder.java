@@ -1,16 +1,18 @@
 package cz.muni.fi.iv109.gui;
 
+import cz.muni.fi.iv109.core.Simulation;
+
 import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Toolkit;
 
 public class UIBuilder {
 
-    public static MainWindow buildMainWindow(int numberOfAgents) {
+    public static MainWindow buildMainWindow(Simulation simulation) {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int simulationPlaneSize = (int) (screenSize.getHeight() * 0.8);
 
-        SimulationPanel simulationPanel = new SimulationPanel(simulationPlaneSize, numberOfAgents);
+        SimulationPanel simulationPanel = new SimulationPanel(simulationPlaneSize, simulation);
 
         return new MainWindow(simulationPanel, calculateCornerLocation(screenSize, simulationPlaneSize));
     }

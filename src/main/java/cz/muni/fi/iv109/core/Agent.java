@@ -1,5 +1,7 @@
 package cz.muni.fi.iv109.core;
 
+import cz.muni.fi.iv109.core.util.Point;
+import cz.muni.fi.iv109.core.util.Vector;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -10,7 +12,11 @@ import static cz.muni.fi.iv109.core.Simulation.PLAYGROUND_SIZE;
 public class Agent {
 
     private static final float ASSIMILATION_FACTOR = 0.01f;
-    private static final float DISTANCE_PER_STEP = 0.5f;
+//    private static final float ASSIMILATION_FACTOR = 0f;
+    private static final float DISTANCE_PER_STEP = 0.3f;
+//    private static final float DISTANCE_PER_STEP = 0f;
+    private static final float SHIFT_ON_MESSAGE = 0.01f;
+//    private static final float SHIFT_ON_MESSAGE = 0f;
 
     private Point position;
 
@@ -21,6 +27,14 @@ public class Agent {
 
     private float direction;
     private short stepsRemaining = 0;
+
+    public Agent(Point position, float culture) {
+        if (culture < -100 || culture > 100)
+            throw new IllegalArgumentException("not within [-100, 100]");
+
+        this.position = position;
+        this.culture = culture;
+    }
 
     public Agent() {
         float x = PrngHolder.randomFloat(0f, PLAYGROUND_SIZE);
@@ -59,11 +73,25 @@ public class Agent {
     }
 
     private void shift(Point positionOfSender, float cultureOfSender) {
-        if (Math.signum(culture) == Math.signum(cultureOfSender)) {
+        int multiplier = Math.signum(culture) == Math.signum(cultureOfSender) ? 1 : -1;
+        Vector vector = new Vector(position, positionOfSender);
+        float size = vector.size();
+        if (size < 10f || Math.abs(size - 50f) < 0.1f) return;
 
-        } else {
+        vector.unify();
+        float x = position.getX();
+        float y = position.getY();
 
-        }
+        float new_x = x + vector.getX() * SHIFT_ON_MESSAGE * multiplier;
+        float new_y = y + vector.getY() * SHIFT_ON_MESSAGE * multiplier;
+
+        if (new_x < 0) new_x += PLAYGROUND_SIZE;
+        if (new_x > PLAYGROUND_SIZE) new_x -= PLAYGROUND_SIZE;
+        if (new_y < 0) new_y += PLAYGROUND_SIZE;
+        if (new_y > PLAYGROUND_SIZE) new_y -= PLAYGROUND_SIZE;
+
+        position.setX(new_x);
+        position.setY(new_y);
     }
 
     private void resetTarget() {
