@@ -8,14 +8,14 @@ class PointTest {
 
     @Test
     void normalDistance() {
-        float distance = new Point(1, 2).distance(new Point(3, 4), 100);
+        float distance = new Point(1, 2).distance(new Point(3, 4));
 
         assertThat(distance).isCloseTo(2.828f, within(0.001f));
     }
 
     @Test
     void distanceOverBorder() {
-        float distance = new Point(1, 1).distance(new Point(99, 99), 100);
+        float distance = new Point(1, 1).distance(new Point(99, 99));
 
         assertThat(distance).isCloseTo(2.828f, within(0.001f));
     }

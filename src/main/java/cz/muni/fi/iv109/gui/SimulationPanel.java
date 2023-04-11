@@ -10,21 +10,27 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 
+import static cz.muni.fi.iv109.core.Simulation.PLAYGROUND_SIZE;
+
 public class SimulationPanel extends JPanel implements Runnable {
 
     private static final int FPS = 60;
-    private static final float RENDER_INTERVAL = 1_000_000_000.0f / FPS;
+    private static final long RENDER_INTERVAL = 1_000_000_000 / FPS; // nanoseconds
+    private static final float RELATIVE_AGENT_RADIUS = 5f;
 
+    private final float simulationPanelScale;
     private final Simulation simulation;
     private final Thread simulationThread;
     private final int agentRadius;
 
-    public SimulationPanel(int playgroundSize, int numberOfAgents) {
-        simulation = new Simulation(playgroundSize, numberOfAgents);
-        simulationThread = new Thread(this);
-        agentRadius = simulation.getPlaygroundSize() / 40;
+    public SimulationPanel(int simulationPlaneSize, int numberOfAgents) {
+        simulationPanelScale = simulationPlaneSize / PLAYGROUND_SIZE;
 
-        this.setPreferredSize(new Dimension(playgroundSize, playgroundSize));
+        simulation = new Simulation(numberOfAgents);
+        simulationThread = new Thread(this);
+        agentRadius = (int) (RELATIVE_AGENT_RADIUS * simulationPanelScale);
+
+        this.setPreferredSize(new Dimension(simulationPlaneSize, simulationPlaneSize));
         this.setBackground(Color.BLACK);
     }
 
@@ -34,7 +40,7 @@ public class SimulationPanel extends JPanel implements Runnable {
 
     @Override
     public void run() {
-        float nextRenderTime = System.nanoTime() + RENDER_INTERVAL;
+        long nextRenderTime = System.nanoTime() + RENDER_INTERVAL;
 
         while (true) {
             simulation.doStep();
@@ -52,8 +58,8 @@ public class SimulationPanel extends JPanel implements Runnable {
         simulation.getAgents().forEach(agent -> {
             g2.setColor(computeColor(agent.getCulture()));
 
-            int x = (int) agent.getPosition().getX() - agentRadius / 2;
-            int y = (int) agent.getPosition().getY() - agentRadius / 2;
+            int x = (int) (agent.getPosition().getX() * simulationPanelScale - agentRadius / 2);
+            int y = (int) (agent.getPosition().getY() * simulationPanelScale - agentRadius / 2);
             g2.fillOval(x, y, agentRadius, agentRadius);
         });
 
@@ -84,10 +90,10 @@ public class SimulationPanel extends JPanel implements Runnable {
         return new Color(red, green, blue);
     }
 
-    private float waitFps(float nextRenderTime) {
-        float timeToSleep = (nextRenderTime - System.nanoTime()) / 1_000_000;
+    private long waitFps(long nextRenderTime) {
+        long timeToSleep = (nextRenderTime - System.nanoTime()) / 1_000_000;
         if (timeToSleep < 0) timeToSleep = 0;
-        sleep((long) timeToSleep);
+        sleep(timeToSleep);
         return nextRenderTime + RENDER_INTERVAL;
     }
 
