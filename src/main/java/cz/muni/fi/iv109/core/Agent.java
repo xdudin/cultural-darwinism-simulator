@@ -6,34 +6,53 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import static cz.muni.fi.iv109.core.Simulation.PLAYGROUND_SIZE;
+import static cz.muni.fi.iv109.core.Simulation.TOTAL_STEPS_OF_LIFE;
 
 @Getter
 @AllArgsConstructor
 public class Agent {
 
+    public static final float MAX_CHILDREN = 7f;
+
     private Point position;
     private float culture; // number from -100 to 100
     private float direction;
     private short stepsRemaining = 0;
-    private short stepsOfLifeRemaining = 3000; // one minute on 50 fps
+    private short age;
+    private short[] childrenDecisionCheckpoint;
+    private byte numberOfChildren;
     private final SimulationParameters parameters;
 
-    public Agent(SimulationParameters parameters, Point position, float culture) {
+    public Agent(SimulationParameters parameters, Point position, float culture, short age) {
         if (culture < -100 || culture > 100)
             throw new IllegalArgumentException("not within [-100, 100]");
 
         this.parameters = parameters;
         this.position = position;
         this.culture = culture;
+        this.age = age;
+        this.childrenDecisionCheckpoint = computeChildrenDecisionCheckpoints();
     }
 
     public Agent(SimulationParameters parameters) {
-        float x = PrngHolder.randomFloat(0f, PLAYGROUND_SIZE);
-        float y = PrngHolder.randomFloat(0f, PLAYGROUND_SIZE);
+        float x = PrngHolder.randomCoordinate();
+        float y = PrngHolder.randomCoordinate();
 
         this.parameters = parameters;
         this.position = new Point(x, y);
-        this.culture = PrngHolder.randomFloat(-100f, 100f);
+        this.culture = PrngHolder.randomCulture();
+        this.age = PrngHolder.randomAge();
+        this.childrenDecisionCheckpoint = computeChildrenDecisionCheckpoints();
+    }
+
+    public void reborn(float x, float y, float culture, short age) {
+        this.culture = culture;
+        this.age = age;
+        position.setX(x);
+        position.setY(y);
+        stepsRemaining = 0;
+        childrenDecisionCheckpoint = computeChildrenDecisionCheckpoints();
+        numberOfChildren = 0;
     }
 
     public void move() {
@@ -46,13 +65,37 @@ public class Agent {
     }
 
     public void receiveMessage(Point positionOfSender, float cultureOfSender) {
-        culture += cultureOfSender * parameters.assimilationFactor();
+        culture += cultureOfSender * parameters.messageFactor();
 //        float mid = (culture + cultureOfSender) / 2;
-//        culture += (mid - culture) * parameters.assimilationFactor();
+//        culture += (mid - culture) * parameters.messageFactor();
         if (culture < -100) culture = -100;
         if (culture > 100) culture = 100;
 
         // shift(positionOfSender, cultureOfSender); // TODO: fine-tune shift parameters
+    }
+
+    public void increaseAge() {
+        age++;
+    }
+
+    public boolean makeChildrenDecision() {
+        if (age < TOTAL_STEPS_OF_LIFE / 3 || age > TOTAL_STEPS_OF_LIFE / 3 * 2)
+            return false;
+
+        for (short checkpoint : childrenDecisionCheckpoint) {
+            if (age == checkpoint) {
+                if (culture > 0) { // k-branch
+                    return PrngHolder.randomFloat(0, 1) <
+                            parameters.k_childrenPerFamily() / childrenDecisionCheckpoint.length;
+                }
+                else { // r-branch
+                    return PrngHolder.randomFloat(0, 1) <
+                            parameters.r_childrenPerFamily() / childrenDecisionCheckpoint.length;
+                }
+            }
+        }
+
+        return false;
     }
 
     private void shift(Point positionOfSender, float cultureOfSender) {
@@ -85,6 +128,19 @@ public class Agent {
     private void resetTarget() {
         direction = PrngHolder.randomDirection();
         stepsRemaining = (short) PrngHolder.randomInteger(100, 200);
+    }
+
+    private short[] computeChildrenDecisionCheckpoints() {
+        short[] childrenCheckpoints = new short[Math.round(MAX_CHILDREN)];
+
+        short counter = TOTAL_STEPS_OF_LIFE / 3;
+        float interval = counter / MAX_CHILDREN;
+        for (int i = 0; i < childrenCheckpoints.length; i++) {
+            childrenCheckpoints[i] = counter;
+            counter += interval;
+        }
+
+        return childrenCheckpoints;
     }
 
     @Override

@@ -13,7 +13,8 @@ public class Main {
     public static void main(String[] args) {
 
         SimulationFactory simulationFactory = new SimulationFactory();
-        Simulation simulation = simulationFactory.thousandRandom();
+        Simulation simulation = simulationFactory.fourDiamond();
+//        Simulation simulation = simulationFactory.thousandRandom();
 
         initNimbusLookAndFeel();
         UIBuilder.buildMainWindow(simulation).startSimulation();
