@@ -12,14 +12,10 @@ import static cz.muni.fi.iv109.core.Simulation.PLAYGROUND_SIZE;
 public class Agent {
 
     private Point position;
-
-    /**
-     * number from -100 to 100
-     */
-    private float culture;
-
+    private float culture; // number from -100 to 100
     private float direction;
     private short stepsRemaining = 0;
+    private short stepsOfLifeRemaining = 3000; // one minute on 50 fps
     private final SimulationParameters parameters;
 
     public Agent(SimulationParameters parameters, Point position, float culture) {
@@ -50,8 +46,9 @@ public class Agent {
     }
 
     public void receiveMessage(Point positionOfSender, float cultureOfSender) {
-        float mid = (culture + cultureOfSender) / 2;
-        culture += (mid - culture) * parameters.assimilationFactor();
+        culture += cultureOfSender * parameters.assimilationFactor();
+//        float mid = (culture + cultureOfSender) / 2;
+//        culture += (mid - culture) * parameters.assimilationFactor();
         if (culture < -100) culture = -100;
         if (culture > 100) culture = 100;
 

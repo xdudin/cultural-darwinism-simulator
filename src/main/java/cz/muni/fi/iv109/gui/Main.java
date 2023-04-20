@@ -10,12 +10,10 @@ import javax.swing.UIManager;
 @Slf4j
 public class Main {
 
-    private static final int NUMBER_OF_AGENTS = 10;
-
     public static void main(String[] args) {
 
         SimulationFactory simulationFactory = new SimulationFactory();
-        Simulation simulation = simulationFactory.fourDiamond();
+        Simulation simulation = simulationFactory.thousandRandom();
 
         initNimbusLookAndFeel();
         UIBuilder.buildMainWindow(simulation).startSimulation();

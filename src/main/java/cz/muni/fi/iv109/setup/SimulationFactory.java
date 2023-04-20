@@ -9,7 +9,7 @@ public class SimulationFactory {
 
     public SimulationParameters test() {
         return new SimulationParameters(
-                0.02f,
+                0.08f,
                 0f,
                 10f,
                 0.001f
@@ -25,5 +25,11 @@ public class SimulationFactory {
         Agent agent4 = new Agent(parameters, new Point(50, 40), -100);
 
         return new Simulation(parameters, agent1, agent2, agent3, agent4);
+    }
+
+    public Simulation thousandRandom() {
+        SimulationParameters parameters = test();
+
+        return new Simulation(parameters, 1000);
     }
 }

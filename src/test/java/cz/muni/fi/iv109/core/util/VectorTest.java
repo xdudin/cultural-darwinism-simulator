@@ -18,7 +18,7 @@ class VectorTest {
     void creation2() {
         Vector vector = new Vector(new Point(41, 50), new Point(99, 50));
 
-        assertThat(vector.getX()).isCloseTo(58, within(0.001f));
+        assertThat(vector.getX()).isCloseTo(-42, within(0.001f));
         assertThat(vector.getY()).isCloseTo(0, within(0.001f));
     }
 

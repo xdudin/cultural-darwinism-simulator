@@ -43,9 +43,9 @@ public class Simulation {
             }
         }
 
-        System.out.print(agents[0]);
-        System.out.print("   ");
-        System.out.println(agents[1]);
+//        System.out.print(agents[0]);
+//        System.out.print("   ");
+//        System.out.println(agents[1]);
 
         stepCounter++;
     }
