@@ -12,7 +12,7 @@ import javax.swing.UIManager;
 @Slf4j
 public class Main {
 
-    private static final int NUMBER_OF_AGENTS = 1000;
+    private static final int NUMBER_OF_AGENTS = 10;
 
     private Main() {
         throw new AssertionError("Not initializable");
@@ -22,8 +22,8 @@ public class Main {
         Agent agent1 = new Agent(new Point(40, 50), -100);
         Agent agent2 = new Agent(new Point(60, 50), 100);
 
-//        Simulation simulation = new Simulation(agent1, agent2);
-        Simulation simulation = new Simulation(NUMBER_OF_AGENTS);
+        Simulation simulation = new Simulation(agent1, agent2);
+//        Simulation simulation = new Simulation(NUMBER_OF_AGENTS);
 
         initNimbusLookAndFeel();
         UIBuilder.buildMainWindow(simulation).startSimulation();

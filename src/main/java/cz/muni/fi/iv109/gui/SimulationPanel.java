@@ -1,5 +1,6 @@
 package cz.muni.fi.iv109.gui;
 
+import cz.muni.fi.iv109.core.Agent;
 import cz.muni.fi.iv109.core.Simulation;
 
 import javax.swing.JPanel;
@@ -14,7 +15,7 @@ import static cz.muni.fi.iv109.core.Simulation.PLAYGROUND_SIZE;
 
 public class SimulationPanel extends JPanel implements Runnable {
 
-    private static final int FPS = 60;
+    private static final int FPS = 50;
     private static final long RENDER_INTERVAL = 1_000_000_000 / FPS; // nanoseconds
     private static final float RELATIVE_AGENT_RADIUS = 2f;
 
@@ -55,13 +56,13 @@ public class SimulationPanel extends JPanel implements Runnable {
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        simulation.getAgents().forEach(agent -> {
+        for (Agent agent: simulation.getAgents()) {
             g2.setColor(computeColor(agent.getCulture()));
 
             int x = (int) (agent.getPosition().getX() * simulationPanelScale - agentRadius / 2);
             int y = (int) (agent.getPosition().getY() * simulationPanelScale - agentRadius / 2);
             g2.fillOval(x, y, agentRadius, agentRadius);
-        });
+        }
 
         g2.dispose();
         Toolkit.getDefaultToolkit().sync();
