@@ -54,7 +54,7 @@ public class Agent {
         if (culture < -100) culture = -100;
         if (culture > 100) culture = 100;
 
-        shift(positionOfSender, cultureOfSender);
+        // shift(positionOfSender, cultureOfSender); // TODO: fine-tune shift parameters
     }
 
     private void shift(Point positionOfSender, float cultureOfSender) {
