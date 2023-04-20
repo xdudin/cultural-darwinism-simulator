@@ -87,7 +87,7 @@ public class Agent {
 
     private void resetTarget() {
         direction = PrngHolder.randomDirection();
-        stepsRemaining = (short) PrngHolder.randomInteger(30, 60);
+        stepsRemaining = (short) PrngHolder.randomInteger(100, 200);
     }
 
     @Override
