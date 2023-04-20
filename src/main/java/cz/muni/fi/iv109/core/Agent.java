@@ -47,19 +47,7 @@ public class Agent {
     public void move() {
         if (stepsRemaining == 0) resetTarget();
 
-        float x = position.getX();
-        float y = position.getY();
-
-        float new_x = (float) (x + Math.cos(direction) * DISTANCE_PER_STEP);
-        float new_y = (float) (y + Math.sin(direction) * DISTANCE_PER_STEP);
-
-        if (new_x < 0) new_x += PLAYGROUND_SIZE;
-        if (new_x > PLAYGROUND_SIZE) new_x -= PLAYGROUND_SIZE;
-        if (new_y < 0) new_y += PLAYGROUND_SIZE;
-        if (new_y > PLAYGROUND_SIZE) new_y -= PLAYGROUND_SIZE;
-
-        position.setX(new_x);
-        position.setY(new_y);
+        move((float) (Math.cos(direction) * DISTANCE_PER_STEP), (float) (Math.sin(direction) * DISTANCE_PER_STEP));
 
         stepsRemaining--;
     }
@@ -79,11 +67,15 @@ public class Agent {
         if (size < 10f || Math.abs(size - 50f) < 0.1f) return;
 
         vector.unify();
+        move(vector.getX() * SHIFT_ON_MESSAGE * multiplier,vector.getY() * SHIFT_ON_MESSAGE * multiplier);
+    }
+
+    private void move(float dx, float dy) {
         float x = position.getX();
         float y = position.getY();
 
-        float new_x = x + vector.getX() * SHIFT_ON_MESSAGE * multiplier;
-        float new_y = y + vector.getY() * SHIFT_ON_MESSAGE * multiplier;
+        float new_x = x + dx;
+        float new_y = y + dy;
 
         if (new_x < 0) new_x += PLAYGROUND_SIZE;
         if (new_x > PLAYGROUND_SIZE) new_x -= PLAYGROUND_SIZE;
