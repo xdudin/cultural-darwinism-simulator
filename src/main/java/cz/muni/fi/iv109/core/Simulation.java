@@ -4,29 +4,27 @@ import cz.muni.fi.iv109.core.util.Vector;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 @Slf4j
 @Getter
 public class Simulation {
 
     public static final float PLAYGROUND_SIZE = 100f;
-    private static final float COMMUNICATION_RADIUS = 2f;
 
     private final Agent[] agents;
     private int stepCounter = 0;
+    private final SimulationParameters parameters;
 
-    public Simulation(int numberOfAgents) {
+    public Simulation(SimulationParameters parameters, int numberOfAgents) {
+        this.parameters = parameters;
         agents = new Agent[numberOfAgents];
 
         for (int i = 0; i < numberOfAgents; i++) {
-            agents[i] = new Agent();
+            agents[i] = new Agent(parameters);
         }
     }
 
-    public Simulation(Agent... agents) {
+    public Simulation(SimulationParameters parameters, Agent... agents) {
+        this.parameters = parameters;
         this.agents = agents;
     }
 
@@ -38,16 +36,16 @@ public class Simulation {
         for (Agent agent : agents) {
             for (Agent candidate : agents) {
                 if (agent != candidate &&
-                    Vector.distance(candidate.getPosition(), agent.getPosition()) < COMMUNICATION_RADIUS)
+                    Vector.distance(candidate.getPosition(), agent.getPosition()) < parameters.communicationRadius())
                 {
                     candidate.receiveMessage(agent.getPosition(), agent.getCulture());
                 }
             }
         }
 
-//        System.out.print(agents.get(0));
-//        System.out.print("   ");
-//        System.out.println(agents.get(1));
+        System.out.print(agents[0]);
+        System.out.print("   ");
+        System.out.println(agents[1]);
 
         stepCounter++;
     }

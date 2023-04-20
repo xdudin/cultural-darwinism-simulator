@@ -11,13 +11,6 @@ import static cz.muni.fi.iv109.core.Simulation.PLAYGROUND_SIZE;
 @AllArgsConstructor
 public class Agent {
 
-    private static final float ASSIMILATION_FACTOR = 0.01f;
-//    private static final float ASSIMILATION_FACTOR = 0f;
-    private static final float DISTANCE_PER_STEP = 0.3f;
-//    private static final float DISTANCE_PER_STEP = 0f;
-    private static final float SHIFT_ON_MESSAGE = 0.01f;
-//    private static final float SHIFT_ON_MESSAGE = 0f;
-
     private Point position;
 
     /**
@@ -27,33 +20,37 @@ public class Agent {
 
     private float direction;
     private short stepsRemaining = 0;
+    private final SimulationParameters parameters;
 
-    public Agent(Point position, float culture) {
+    public Agent(SimulationParameters parameters, Point position, float culture) {
         if (culture < -100 || culture > 100)
             throw new IllegalArgumentException("not within [-100, 100]");
 
+        this.parameters = parameters;
         this.position = position;
         this.culture = culture;
     }
 
-    public Agent() {
+    public Agent(SimulationParameters parameters) {
         float x = PrngHolder.randomFloat(0f, PLAYGROUND_SIZE);
         float y = PrngHolder.randomFloat(0f, PLAYGROUND_SIZE);
 
-        position = new Point(x, y);
-        culture = PrngHolder.randomFloat(-100f, 100f);
+        this.parameters = parameters;
+        this.position = new Point(x, y);
+        this.culture = PrngHolder.randomFloat(-100f, 100f);
     }
 
     public void move() {
         if (stepsRemaining == 0) resetTarget();
 
-        move((float) (Math.cos(direction) * DISTANCE_PER_STEP), (float) (Math.sin(direction) * DISTANCE_PER_STEP));
+        move((float) (Math.cos(direction) * parameters.distancePerStep()),
+                (float) (Math.sin(direction) * parameters.distancePerStep()));
 
         stepsRemaining--;
     }
 
     public void receiveMessage(Point positionOfSender, float cultureOfSender) {
-        culture += cultureOfSender * ASSIMILATION_FACTOR;
+        culture += cultureOfSender * parameters.assimilationFactor();
         if (culture < -100) culture = -100;
         if (culture > 100) culture = 100;
 
@@ -67,7 +64,8 @@ public class Agent {
         if (size < 10f || Math.abs(size - 50f) < 0.1f) return;
 
         vector.unify();
-        move(vector.getX() * SHIFT_ON_MESSAGE * multiplier,vector.getY() * SHIFT_ON_MESSAGE * multiplier);
+        move(vector.getX() * parameters.shiftOnMessage() * multiplier,
+                vector.getY() * parameters.shiftOnMessage() * multiplier);
     }
 
     private void move(float dx, float dy) {
