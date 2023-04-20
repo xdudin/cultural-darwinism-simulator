@@ -44,13 +44,14 @@ public class Agent {
         if (stepsRemaining == 0) resetTarget();
 
         move((float) (Math.cos(direction) * parameters.distancePerStep()),
-                (float) (Math.sin(direction) * parameters.distancePerStep()));
+             (float) (Math.sin(direction) * parameters.distancePerStep()));
 
         stepsRemaining--;
     }
 
     public void receiveMessage(Point positionOfSender, float cultureOfSender) {
-        culture += cultureOfSender * parameters.assimilationFactor();
+        float mid = (culture + cultureOfSender) / 2;
+        culture += (mid - culture) * parameters.assimilationFactor();
         if (culture < -100) culture = -100;
         if (culture > 100) culture = 100;
 
@@ -65,7 +66,7 @@ public class Agent {
 
         vector.unify();
         move(vector.getX() * parameters.shiftOnMessage() * multiplier,
-                vector.getY() * parameters.shiftOnMessage() * multiplier);
+             vector.getY() * parameters.shiftOnMessage() * multiplier);
     }
 
     private void move(float dx, float dy) {

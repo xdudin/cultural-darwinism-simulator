@@ -22,9 +22,9 @@ public class Main {
     public static void main(String[] args) {
 
         SimulationParameters parameters = new SimulationParameters(
-                0.1f,
                 0f,
-                10f,
+                0f,
+                21f,
                 0.01f
         );
 
