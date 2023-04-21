@@ -5,7 +5,8 @@ import java.util.Random;
 @SuppressWarnings("unused")
 public class PrngHolder {
 
-    private static final Random random = new Random(1000);
+    private static final Random random = new Random();
+//    private static final Random random = new Random(1000);
 
     /**
      * return next random integer within the interval [from, to]

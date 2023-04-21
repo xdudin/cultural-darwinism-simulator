@@ -5,7 +5,7 @@ import cz.muni.fi.iv109.core.Simulation;
 public class SimulationRunner implements Runnable {
 
     private final Simulation simulation;
-    private int numberOfSteps;
+    private final int numberOfSteps;
 
     public SimulationRunner(Simulation simulation, int numberOfSteps) {
         this.simulation = simulation;
@@ -14,7 +14,7 @@ public class SimulationRunner implements Runnable {
 
     @Override
     public void run() {
-        while (numberOfSteps-- > 0) {
+        while (simulation.getStepCounter() < numberOfSteps) {
             simulation.doStep();
         }
     }

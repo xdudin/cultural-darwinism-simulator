@@ -5,21 +5,22 @@ import cz.muni.fi.iv109.core.Simulation;
 import cz.muni.fi.iv109.core.SimulationParameters;
 import cz.muni.fi.iv109.core.util.Point;
 
+@SuppressWarnings("unused")
 public class SimulationFactory {
 
-    public SimulationParameters test() {
+    public static SimulationParameters testParameters() {
         return new SimulationParameters(
                 0.08f,
                 5f,
                 0.001f,
-                3.3f,
+                3f,
                 1.5f,
                 4.5f
         );
     }
 
-    public Simulation fourDiamond() {
-        SimulationParameters parameters = test();
+    public static Simulation fourDiamond() {
+        SimulationParameters parameters = testParameters();
 
         Agent agent1 = new Agent(parameters, new Point(40, 50), 100, (short) 0);
         Agent agent2 = new Agent(parameters, new Point(60, 50), 100, (short) 40);
@@ -29,8 +30,8 @@ public class SimulationFactory {
         return new Simulation(parameters, agent1, agent2, agent3, agent4);
     }
 
-    public Simulation thousandRandom() {
-        SimulationParameters parameters = test();
+    public static Simulation thousandRandom() {
+        SimulationParameters parameters = testParameters();
 
         return new Simulation(parameters, 1000);
     }

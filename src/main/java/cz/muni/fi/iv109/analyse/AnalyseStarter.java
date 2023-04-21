@@ -7,8 +7,7 @@ public class AnalyseStarter {
 
     public static void main(String[] args) {
 
-        SimulationFactory simulationFactory = new SimulationFactory();
-        Simulation simulation = simulationFactory.thousandRandom();
+        Simulation simulation = SimulationFactory.thousandRandom();
 
         SimulationRunner simulationRunner = new SimulationRunner(simulation, 100);
 
