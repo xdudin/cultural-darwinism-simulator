@@ -9,11 +9,11 @@ public class SimulationFactory {
 
     public SimulationParameters test() {
         return new SimulationParameters(
-                0.02f,
+                0.08f,
                 0f,
                 5f,
                 0.001f,
-                2f,
+                3.3f,
                 1.5f,
                 4.5f
         );

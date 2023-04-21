@@ -8,9 +8,9 @@ public class AnalyseStarter {
     public static void main(String[] args) {
 
         SimulationFactory simulationFactory = new SimulationFactory();
-        Simulation simulation = simulationFactory.fourDiamond();
+        Simulation simulation = simulationFactory.thousandRandom();
 
-        SimulationRunner simulationRunner = new SimulationRunner(simulation, 30000);
+        SimulationRunner simulationRunner = new SimulationRunner(simulation, 100);
 
         long start = System.currentTimeMillis();
         simulationRunner.run();
