@@ -10,7 +10,6 @@ public class SimulationFactory {
     public SimulationParameters test() {
         return new SimulationParameters(
                 0.08f,
-                0f,
                 5f,
                 0.001f,
                 3.3f,

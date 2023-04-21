@@ -1,7 +1,6 @@
 package cz.muni.fi.iv109.core;
 
 import cz.muni.fi.iv109.core.util.Point;
-import cz.muni.fi.iv109.core.util.Vector;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

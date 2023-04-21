@@ -1,6 +1,5 @@
 package cz.muni.fi.iv109.core;
 
-import cz.muni.fi.iv109.core.util.Vector;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -37,7 +36,7 @@ public class Simulation {
         for (Agent agent : agents) {
             for (Agent candidate : agents) {
                 if (agent != candidate &&
-                    Vector.distance(candidate.getPosition(), agent.getPosition()) < parameters.communicationRadius())
+                    candidate.getPosition().distance(agent.getPosition()) < parameters.communicationRadius())
                 {
                     candidate.receiveMessage(agent.getCulture());
                 }
