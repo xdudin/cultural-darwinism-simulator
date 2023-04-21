@@ -39,7 +39,7 @@ public class Simulation {
                 if (agent != candidate &&
                     Vector.distance(candidate.getPosition(), agent.getPosition()) < parameters.communicationRadius())
                 {
-                    candidate.receiveMessage(agent.getPosition(), agent.getCulture());
+                    candidate.receiveMessage(agent.getCulture());
                 }
             }
         }

@@ -64,14 +64,20 @@ public class Agent {
         stepsRemaining--;
     }
 
-    public void receiveMessage(Point positionOfSender, float cultureOfSender) {
-        culture += cultureOfSender * parameters.messageFactor();
+    public void receiveMessage(float cultureOfSender) {
+
+        if (cultureOfSender > 0) { // sender is k
+            culture += cultureOfSender * parameters.messageFactor() * parameters.assimilationFactor();
+        }
+        else { // sender is r
+            culture += cultureOfSender * parameters.messageFactor();
+        }
+
 //        float mid = (culture + cultureOfSender) / 2;
 //        culture += (mid - culture) * parameters.messageFactor();
+
         if (culture < -100) culture = -100;
         if (culture > 100) culture = 100;
-
-        // shift(positionOfSender, cultureOfSender); // TODO: fine-tune shift parameters
     }
 
     public void increaseAge() {
@@ -96,17 +102,6 @@ public class Agent {
         }
 
         return false;
-    }
-
-    private void shift(Point positionOfSender, float cultureOfSender) {
-        int multiplier = Math.signum(culture) == Math.signum(cultureOfSender) ? 1 : -1;
-        Vector vector = new Vector(position, positionOfSender);
-        float size = vector.size();
-        if (size < 10f || Math.abs(size - 50f) < 0.1f) return;
-
-        vector.unify();
-        move(vector.getX() * parameters.shiftOnMessage() * multiplier,
-             vector.getY() * parameters.shiftOnMessage() * multiplier);
     }
 
     private void move(float dx, float dy) {

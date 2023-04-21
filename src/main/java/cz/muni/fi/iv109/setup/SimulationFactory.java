@@ -11,9 +11,9 @@ public class SimulationFactory {
         return new SimulationParameters(
                 0.02f,
                 0f,
-                20f,
+                5f,
                 0.001f,
-                3f,
+                2f,
                 1.5f,
                 4.5f
         );
