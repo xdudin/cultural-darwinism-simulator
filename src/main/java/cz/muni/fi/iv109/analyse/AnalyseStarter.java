@@ -9,9 +9,10 @@ public class AnalyseStarter {
 
         Simulation simulation = SimulationFactory.thousandRandom();
 
-        SimulationRunner simulationRunner = new SimulationRunner(simulation, 100);
+        SimulationRunner simulationRunner = new SimulationRunner(simulation, 1000);
 
-        long start = System.currentTimeMillis();
+        long start;
+        start = System.currentTimeMillis();
         simulationRunner.run();
         System.out.println(System.currentTimeMillis() - start);
     }

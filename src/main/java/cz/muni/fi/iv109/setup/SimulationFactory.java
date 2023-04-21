@@ -35,4 +35,10 @@ public class SimulationFactory {
 
         return new Simulation(parameters, 1000);
     }
+
+    public static Simulation hundredRandom() {
+        SimulationParameters parameters = testParameters();
+
+        return new Simulation(parameters, 100);
+    }
 }

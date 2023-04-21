@@ -13,8 +13,8 @@ public class Point {
     private float y;
 
     public float distance(Point point) {
-        float delta_x = Math.abs(this.x - point.x);
-        float delta_y = Math.abs(this.y - point.y);
+        float delta_x = point.x - this.x;
+        float delta_y = point.y - this.y;
 
         if (delta_x > PLAYGROUND_SIZE / 2.0f) delta_x -= PLAYGROUND_SIZE;
         if (delta_y > PLAYGROUND_SIZE / 2.0f) delta_y -= PLAYGROUND_SIZE;

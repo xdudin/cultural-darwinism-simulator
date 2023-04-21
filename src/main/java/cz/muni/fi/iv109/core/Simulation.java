@@ -1,6 +1,7 @@
 package cz.muni.fi.iv109.core;
 
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -11,6 +12,7 @@ public class Simulation {
     public static final short TOTAL_STEPS_OF_LIFE = 300;
 
     private final Agent[] agents;
+    @Setter
     private int stepCounter = 0;
     private final SimulationParameters parameters;
 
