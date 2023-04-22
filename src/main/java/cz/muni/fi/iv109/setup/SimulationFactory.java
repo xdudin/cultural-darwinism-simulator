@@ -22,10 +22,10 @@ public class SimulationFactory {
     public static Simulation fourDiamond() {
         SimulationParameters parameters = testParameters();
 
-        Agent agent1 = new Agent(parameters, new Point(40, 50), 100, (short) 0);
-        Agent agent2 = new Agent(parameters, new Point(60, 50), 100, (short) 40);
-        Agent agent3 = new Agent(parameters, new Point(50, 60), -100, (short) 80);
-        Agent agent4 = new Agent(parameters, new Point(50, 40), -100, (short) 120);
+        Agent agent1 = new Agent(parameters, new Point(40, 50), 100, 0);
+        Agent agent2 = new Agent(parameters, new Point(60, 50), 100, 40);
+        Agent agent3 = new Agent(parameters, new Point(50, 60), -100, 80);
+        Agent agent4 = new Agent(parameters, new Point(50, 40), -100, 120);
 
         return new Simulation(parameters, agent1, agent2, agent3, agent4);
     }

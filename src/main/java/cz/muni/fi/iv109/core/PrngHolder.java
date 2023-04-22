@@ -15,11 +15,6 @@ public class PrngHolder {
         return random.nextInt(from, to + 1);
     }
 
-    public static byte randomByte(int from, int to) {
-        if (from < -128 || to > 127) throw new IllegalArgumentException("not in byte range");
-        return (byte) randomInteger(from, to);
-    }
-
     public static float randomFloat(float from, float to) {
         return random.nextFloat(from, to);
     }
@@ -32,8 +27,8 @@ public class PrngHolder {
         return randomFloat(-100, 100);
     }
 
-    public static short randomAge() {
-        return (short) randomInteger(0, Simulation.TOTAL_STEPS_OF_LIFE);
+    public static int randomAge() {
+        return randomInteger(0, Simulation.TOTAL_STEPS_OF_LIFE);
     }
 
     /**

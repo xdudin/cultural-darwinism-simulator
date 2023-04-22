@@ -25,7 +25,7 @@ class AgentTest {
         int[] actualNumberOfChildren = new int[numberOfExperiments];
 
         for (int e = 0; e < numberOfExperiments; e++) {
-            agent = new Agent(parameters, new Point(0, 0), culture, (short) 0);
+            agent = new Agent(parameters, new Point(0, 0), culture, 0);
 
             int numberOfChildren = 0;
             for (int i = 0; i < Simulation.TOTAL_STEPS_OF_LIFE; i++) {
@@ -52,9 +52,9 @@ class AgentTest {
     void computeChildrenDecisionCheckpoints() {
         int maxChildren = 7;
 
-        short[] childrenCheckpoints = new short[maxChildren];
+        int[] childrenCheckpoints = new int[maxChildren];
 
-        short counter = TOTAL_STEPS_OF_LIFE / 3;
+        int counter = TOTAL_STEPS_OF_LIFE / 3;
         float interval = (float) counter / maxChildren;
         for (int i = 0; i < childrenCheckpoints.length; i++) {
             childrenCheckpoints[i] = counter;

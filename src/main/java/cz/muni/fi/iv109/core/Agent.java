@@ -12,17 +12,17 @@ import static cz.muni.fi.iv109.core.Simulation.TOTAL_STEPS_OF_LIFE;
 public class Agent {
 
     public static final float MAX_CHILDREN = 7f;
-    public static final short[] CHILDREN_CHECKPOINTS = {100, 114, 128, 142, 156, 170, 184};
+    public static final int[] CHILDREN_CHECKPOINTS = {100, 114, 128, 142, 156, 170, 184};
 
     private Point position;
     private float culture; // number from -100 to 100
     private float direction;
-    private short stepsRemaining = 0;
-    private short age;
-    private byte numberOfChildren;
+    private int stepsRemaining = 0;
+    private int age;
+    private int numberOfChildren;
     private final SimulationParameters parameters;
 
-    public Agent(SimulationParameters parameters, Point position, float culture, short age) {
+    public Agent(SimulationParameters parameters, Point position, float culture, int age) {
         if (culture < -100 || culture > 100)
             throw new IllegalArgumentException("not within [-100, 100]");
 
@@ -42,7 +42,7 @@ public class Agent {
         this.age = PrngHolder.randomAge();
     }
 
-    public void reborn(float x, float y, float culture, short age) {
+    public void reborn(float x, float y, float culture, int age) {
         this.culture = culture;
         this.age = age;
         position.setX(x);
@@ -81,7 +81,7 @@ public class Agent {
         if (age < TOTAL_STEPS_OF_LIFE / 3 || age > TOTAL_STEPS_OF_LIFE / 3 * 2)
             return false;
 
-        for (short checkpoint : CHILDREN_CHECKPOINTS) {
+        for (int checkpoint : CHILDREN_CHECKPOINTS) {
             if (age == checkpoint) {
                 if (culture > 0) { // k-branch
                     return PrngHolder.randomFloat(0, 1) <
@@ -115,7 +115,7 @@ public class Agent {
 
     private void resetTarget() {
         direction = PrngHolder.randomDirection();
-        stepsRemaining = (short) PrngHolder.randomInteger(100, 200);
+        stepsRemaining = PrngHolder.randomInteger(100, 200);
     }
 
     @Override

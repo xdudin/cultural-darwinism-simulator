@@ -9,7 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 public class Simulation {
 
     public static final float PLAYGROUND_SIZE = 100f;
-    public static final short TOTAL_STEPS_OF_LIFE = 300;
+    public static final int TOTAL_STEPS_OF_LIFE = 300;
 
     private final Agent[] agents;
     @Setter
@@ -48,7 +48,7 @@ public class Simulation {
         for (Agent agent : agents) {
             agent.increaseAge();
 
-            short age = agent.getAge();
+            int age = agent.getAge();
             if (age >= TOTAL_STEPS_OF_LIFE) {
                 agent.reborn(
                         PrngHolder.randomCoordinate(),
@@ -66,7 +66,7 @@ public class Simulation {
                         (float) Math.cos(PrngHolder.randomDirection()) + agent.getPosition().getX(),
                         (float) Math.sin(PrngHolder.randomDirection()) + agent.getPosition().getY(),
                         agent.getCulture(),
-                        (short) 0
+                        0
                 );
             }
         }
