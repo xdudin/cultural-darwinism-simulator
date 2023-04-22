@@ -1,6 +1,6 @@
 package cz.muni.fi.iv109.core;
 
-import cz.muni.fi.iv109.core.util.Point;
+import cz.muni.fi.iv109.core.playground.Point;
 import cz.muni.fi.iv109.setup.SimulationFactory;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

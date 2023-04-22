@@ -1,4 +1,4 @@
-package cz.muni.fi.iv109.core.util;
+package cz.muni.fi.iv109.core.playground;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,6 +1,7 @@
 package cz.muni.fi.iv109.core;
 
-import cz.muni.fi.iv109.core.util.Point;
+import cz.muni.fi.iv109.core.playground.Point;
+import cz.muni.fi.iv109.core.playground.PositionUpdatable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -9,7 +10,7 @@ import static cz.muni.fi.iv109.core.Simulation.TOTAL_STEPS_OF_LIFE;
 
 @Getter
 @AllArgsConstructor
-public class Agent {
+public class Agent extends PositionUpdatable {
 
     public static final float MAX_CHILDREN = 7f;
     public static final int[] CHILDREN_CHECKPOINTS = {100, 114, 128, 142, 156, 170, 184};
@@ -49,6 +50,8 @@ public class Agent {
         position.setY(y);
         stepsRemaining = 0;
         numberOfChildren = 0;
+
+        positionUpdate(this);
     }
 
     public void move() {
@@ -111,6 +114,8 @@ public class Agent {
 
         position.setX(new_x);
         position.setY(new_y);
+
+        positionUpdate(this);
     }
 
     private void resetTarget() {

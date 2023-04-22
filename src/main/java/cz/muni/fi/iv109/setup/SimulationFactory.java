@@ -3,7 +3,7 @@ package cz.muni.fi.iv109.setup;
 import cz.muni.fi.iv109.core.Agent;
 import cz.muni.fi.iv109.core.Simulation;
 import cz.muni.fi.iv109.core.SimulationParameters;
-import cz.muni.fi.iv109.core.util.Point;
+import cz.muni.fi.iv109.core.playground.Point;
 
 @SuppressWarnings("unused")
 public class SimulationFactory {
@@ -17,6 +17,15 @@ public class SimulationFactory {
                 1.5f,
                 4.5f
         );
+    }
+
+    public static Simulation twoRow() {
+        SimulationParameters parameters = testParameters();
+
+        Agent agent1 = new Agent(parameters, new Point(50, 50), 100, 0);
+        Agent agent2 = new Agent(parameters, new Point(38, 38), -100, 50);
+
+        return new Simulation(parameters, agent1, agent2);
     }
 
     public static Simulation fourDiamond() {
