@@ -9,10 +9,22 @@ public class AnalyseStarter {
 
         Simulation simulation = SimulationFactory.thousandRandom();
 
-        SimulationRunner simulationRunner = new SimulationRunner(simulation, 1000);
+        // 1500 iteration - O(n^2) - 6300 ms
+        SimulationRunner simulationRunner = new SimulationRunner(simulation, 1500);
 
         long start;
         start = System.currentTimeMillis();
+        simulation.setStepCounter(0);
+        simulationRunner.run();
+        System.out.println(System.currentTimeMillis() - start);
+
+        start = System.currentTimeMillis();
+        simulation.setStepCounter(0);
+        simulationRunner.run();
+        System.out.println(System.currentTimeMillis() - start);
+
+        start = System.currentTimeMillis();
+        simulation.setStepCounter(0);
         simulationRunner.run();
         System.out.println(System.currentTimeMillis() - start);
     }
