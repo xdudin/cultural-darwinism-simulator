@@ -59,7 +59,7 @@ public class Simulation {
         }
 
         stepCounter++;
-        System.out.println(getStepCounter() + " " + getAverageCulture());
+//        System.out.println(getStepCounter() + " " + getAverageCulture());
     }
 
     public float getAverageCulture() {

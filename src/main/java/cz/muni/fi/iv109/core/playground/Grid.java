@@ -59,11 +59,16 @@ public class Grid implements PositionUpdateListener {
 
     private void applyForCell(Agent agent, Cell cell, Consumer<Agent> operation) {
         for (Agent candidate : cell.getAgents()) {
-            if (agent != candidate
-                    && candidate.getPosition().distance(agent.getPosition()) < communicationRadius
-            ) {
-                operation.accept(candidate);
-            }
+            if (agent == candidate) continue;
+
+            float ac = agent.getCulture();
+            float cc = candidate.getCulture();
+            if (ac == 100 && cc == 100) continue;
+            if (ac == -100 && cc == -100) continue;
+
+            if (!(candidate.getPosition().distance(agent.getPosition()) < communicationRadius)) continue;
+
+            operation.accept(candidate);
         }
     }
 
