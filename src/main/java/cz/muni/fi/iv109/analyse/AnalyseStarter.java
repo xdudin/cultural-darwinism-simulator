@@ -1,13 +1,14 @@
 package cz.muni.fi.iv109.analyse;
 
 import cz.muni.fi.iv109.core.Simulation;
+import cz.muni.fi.iv109.setup.Disposition;
 import cz.muni.fi.iv109.setup.SimulationFactory;
 
 public class AnalyseStarter {
 
     public static void main(String[] args) {
 
-        Simulation simulation = SimulationFactory.thousandRandom();
+        Simulation simulation = SimulationFactory.referenceSimulation(1000, Disposition.RANDOM);
 
         SimulationRunner simulationRunner = new SimulationRunner(simulation, 1500);
 

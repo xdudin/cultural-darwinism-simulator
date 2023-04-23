@@ -2,6 +2,7 @@ package cz.muni.fi.iv109.gui;
 
 import com.formdev.flatlaf.FlatLightLaf;
 import cz.muni.fi.iv109.core.Simulation;
+import cz.muni.fi.iv109.setup.Disposition;
 import cz.muni.fi.iv109.setup.SimulationFactory;
 import lombok.extern.slf4j.Slf4j;
 
@@ -12,7 +13,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Simulation simulation = SimulationFactory.thousandRandom();
+        Simulation simulation = SimulationFactory.referenceSimulation(1000, Disposition.CIRCLE);
 
         initNimbusLookAndFeel();
         UIBuilder.buildMainWindow(simulation).startSimulation();

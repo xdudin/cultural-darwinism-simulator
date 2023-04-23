@@ -20,7 +20,7 @@ class AgentTest {
     void childCreationTest(float culture, float expectedMean) {
         int numberOfExperiments = 10000;
 
-        SimulationParameters parameters = SimulationFactory.testParameters();
+        SimulationParameters parameters = SimulationFactory.referenceParameters();
         Agent agent;
         int[] actualNumberOfChildren = new int[numberOfExperiments];
 

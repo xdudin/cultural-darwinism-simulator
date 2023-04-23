@@ -17,20 +17,8 @@ public class Simulation {
     private int stepCounter = 0;
     private final SimulationParameters parameters;
 
-    public Simulation(SimulationParameters parameters, int numberOfAgents) {
-        this.parameters = parameters;
-
-        Agent[] agents = new Agent[numberOfAgents];
-        for (int i = 0; i < numberOfAgents; i++) {
-            agents[i] = new Agent(parameters);
-        }
-
-        this.grid = new Grid(parameters.communicationRadius(), agents);
-    }
-
     public Simulation(SimulationParameters parameters, Agent... agents) {
         this.parameters = parameters;
-
         this.grid = new Grid(parameters.communicationRadius(), agents);
     }
 
@@ -71,5 +59,16 @@ public class Simulation {
         }
 
         stepCounter++;
+        System.out.println(getStepCounter() + " " + getAverageCulture());
+    }
+
+    public float getAverageCulture() {
+        float total = 0;
+
+        for (Agent agent : grid.getAgents()) {
+            total += agent.getCulture();
+        }
+
+        return total / grid.getAgents().length;
     }
 }

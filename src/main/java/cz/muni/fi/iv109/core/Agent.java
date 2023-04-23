@@ -4,11 +4,12 @@ import cz.muni.fi.iv109.core.playground.Point;
 import cz.muni.fi.iv109.core.playground.PositionUpdatable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 import static cz.muni.fi.iv109.core.Simulation.PLAYGROUND_SIZE;
 import static cz.muni.fi.iv109.core.Simulation.TOTAL_STEPS_OF_LIFE;
 
-@Getter
+@Getter @Setter
 @AllArgsConstructor
 public class Agent extends PositionUpdatable {
 
@@ -34,13 +35,14 @@ public class Agent extends PositionUpdatable {
     }
 
     public Agent(SimulationParameters parameters) {
-        float x = PrngHolder.randomCoordinate();
-        float y = PrngHolder.randomCoordinate();
-
-        this.parameters = parameters;
-        this.position = new Point(x, y);
-        this.culture = PrngHolder.randomCulture();
-        this.age = PrngHolder.randomAge();
+        this(
+            parameters,
+            new Point(
+                    PrngHolder.randomCoordinate(),
+                    PrngHolder.randomCoordinate()),
+            PrngHolder.randomCulture(),
+            PrngHolder.randomAge()
+        );
     }
 
     public void reborn(float x, float y, float culture, int age) {
@@ -88,11 +90,11 @@ public class Agent extends PositionUpdatable {
             if (age == checkpoint) {
                 if (culture > 0) { // k-branch
                     return PrngHolder.randomFloat(0, 1) <
-                            parameters.k_childrenPerFamily() / CHILDREN_CHECKPOINTS.length;
+                            parameters.k_fertilityFactor() / CHILDREN_CHECKPOINTS.length;
                 }
                 else { // r-branch
                     return PrngHolder.randomFloat(0, 1) <
-                            parameters.r_childrenPerFamily() / CHILDREN_CHECKPOINTS.length;
+                            parameters.r_fertilityFactor() / CHILDREN_CHECKPOINTS.length;
                 }
             }
         }
@@ -121,6 +123,13 @@ public class Agent extends PositionUpdatable {
     private void resetTarget() {
         direction = PrngHolder.randomDirection();
         stepsRemaining = PrngHolder.randomInteger(100, 200);
+    }
+
+    public void setCulture(float culture) {
+        if (culture < -100 || culture > 100)
+            throw new IllegalArgumentException("not within [-100, 100]");
+
+        this.culture = culture;
     }
 
     @Override
