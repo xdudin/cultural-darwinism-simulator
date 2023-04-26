@@ -23,11 +23,13 @@ public class Agent extends PositionUpdatable {
     private int age;
     private int numberOfChildren;
     private final SimulationParameters parameters;
+    private final PrngHolder prngHolder;
 
     public Agent(SimulationParameters parameters, Point position, float culture, int age) {
         if (culture < -100 || culture > 100)
             throw new IllegalArgumentException("not within [-100, 100]");
 
+        this.prngHolder = parameters.prngHolder();
         this.parameters = parameters;
         this.position = position;
         this.culture = culture;
@@ -38,10 +40,10 @@ public class Agent extends PositionUpdatable {
         this(
             parameters,
             new Point(
-                    PrngHolder.randomCoordinate(),
-                    PrngHolder.randomCoordinate()),
-            PrngHolder.randomCulture(),
-            PrngHolder.randomAge()
+                    parameters.prngHolder().randomCoordinate(),
+                    parameters.prngHolder().randomCoordinate()),
+            parameters.prngHolder().randomCulture(),
+            parameters.prngHolder().randomAge()
         );
     }
 
@@ -89,11 +91,11 @@ public class Agent extends PositionUpdatable {
         for (int checkpoint : CHILDREN_CHECKPOINTS) {
             if (age == checkpoint) {
                 if (culture > 0) { // k-branch
-                    return PrngHolder.randomFloat(0, 1) <
+                    return prngHolder.randomFloat(0, 1) <
                             parameters.k_fertilityFactor() / CHILDREN_CHECKPOINTS.length;
                 }
                 else { // r-branch
-                    return PrngHolder.randomFloat(0, 1) <
+                    return prngHolder.randomFloat(0, 1) <
                             parameters.r_fertilityFactor() / CHILDREN_CHECKPOINTS.length;
                 }
             }
@@ -121,8 +123,8 @@ public class Agent extends PositionUpdatable {
     }
 
     private void resetTarget() {
-        direction = PrngHolder.randomDirection();
-        stepsRemaining = PrngHolder.randomInteger(100, 200);
+        direction = prngHolder.randomDirection();
+        stepsRemaining = prngHolder.randomInteger(100, 200);
     }
 
     public void setCulture(float culture) {

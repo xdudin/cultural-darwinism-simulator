@@ -16,8 +16,10 @@ public class Simulation {
     @Setter
     private int stepCounter = 0;
     private final SimulationParameters parameters;
+    private final PrngHolder prngHolder;
 
     public Simulation(SimulationParameters parameters, Agent... agents) {
+        this.prngHolder = parameters.prngHolder();
         this.parameters = parameters;
         this.grid = new Grid(parameters.communicationRadius(), agents);
     }
@@ -38,20 +40,20 @@ public class Simulation {
             int age = agent.getAge();
             if (age >= TOTAL_STEPS_OF_LIFE) {
                 agent.reborn(
-                        PrngHolder.randomCoordinate(),
-                        PrngHolder.randomCoordinate(),
-                        PrngHolder.randomCulture(),
-                        PrngHolder.randomAge()
+                        prngHolder.randomCoordinate(),
+                        prngHolder.randomCoordinate(),
+                        prngHolder.randomCulture(),
+                        prngHolder.randomAge()
                 );
                 continue;
             }
 
             if (agent.makeChildrenDecision()) {
-                int toKillIndex = PrngHolder.randomInteger(0, grid.getAgents().length - 1);
+                int toKillIndex = prngHolder.randomInteger(0, grid.getAgents().length - 1);
 
                 grid.getAgents()[toKillIndex].reborn(
-                        (float) Math.cos(PrngHolder.randomDirection()) + agent.getPosition().getX(),
-                        (float) Math.sin(PrngHolder.randomDirection()) + agent.getPosition().getY(),
+                        (float) Math.cos(prngHolder.randomDirection()) + agent.getPosition().getX(),
+                        (float) Math.sin(prngHolder.randomDirection()) + agent.getPosition().getY(),
                         agent.getCulture(),
                         0
                 );
@@ -59,7 +61,6 @@ public class Simulation {
         }
 
         stepCounter++;
-//        System.out.println(getStepCounter() + " " + getAverageCulture());
     }
 
     public float getAverageCulture() {

@@ -13,7 +13,7 @@ public class Main {
 
     public static void main(String[] args) {
 
-        Simulation simulation = SimulationFactory.referenceSimulation(1000, Disposition.CIRCLE);
+        Simulation simulation = SimulationFactory.referenceSimulation(1000, Disposition.RANDOM);
 
         initNimbusLookAndFeel();
         UIBuilder.buildMainWindow(simulation).startSimulation();

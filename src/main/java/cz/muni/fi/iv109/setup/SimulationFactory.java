@@ -1,9 +1,12 @@
 package cz.muni.fi.iv109.setup;
 
 import cz.muni.fi.iv109.core.Agent;
+import cz.muni.fi.iv109.core.PrngHolder;
 import cz.muni.fi.iv109.core.Simulation;
 import cz.muni.fi.iv109.core.SimulationParameters;
 import cz.muni.fi.iv109.core.playground.Point;
+
+import java.util.Random;
 
 import static cz.muni.fi.iv109.core.Simulation.PLAYGROUND_SIZE;
 
@@ -11,12 +14,17 @@ import static cz.muni.fi.iv109.core.Simulation.PLAYGROUND_SIZE;
 public class SimulationFactory {
 
     public static SimulationParameters analysisParameters(
+            long seed,
             float assimilationFactor,
             float fertilityMultiplier
     ) {
+        if (assimilationFactor < 1 || fertilityMultiplier < 1)
+            throw new IllegalArgumentException("factors must be > 1");
+
         float k_fertilityFactor = 1.5f;
 
         return new SimulationParameters(
+                new PrngHolder(seed),
                 0.08f,
                 5f,
                 0.001f,
@@ -28,10 +36,11 @@ public class SimulationFactory {
 
     public static SimulationParameters referenceParameters() {
         return new SimulationParameters(
+                new PrngHolder(new Random().nextLong()),
                 0.08f,
                 5f,
                 0.001f,
-                5.5f,
+                3f,
                 1.5f,
                 4.5f
         );
@@ -59,14 +68,21 @@ public class SimulationFactory {
 
     public static Simulation referenceSimulation(int numberOfAgents, Disposition disposition) {
         SimulationParameters parameters = referenceParameters();
+        Agent[] agents = agents(parameters, numberOfAgents, disposition);
 
-        Agent[] agents = switch (disposition) {
+        return new Simulation(parameters, agents);
+    }
+
+    public static Agent[] agents(
+            SimulationParameters parameters,
+            int numberOfAgents,
+            Disposition disposition
+    ) {
+        return switch (disposition) {
             case RANDOM -> randomAgents(parameters, numberOfAgents);
             case HALF -> halfAgents(parameters, numberOfAgents);
             case CIRCLE -> circleAgents(parameters, numberOfAgents);
         };
-
-        return new Simulation(parameters, agents);
     }
 
     public static Agent[] randomAgents(SimulationParameters parameters, int numberOfAgents) {
