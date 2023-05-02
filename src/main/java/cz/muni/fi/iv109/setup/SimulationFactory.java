@@ -16,12 +16,12 @@ public class SimulationFactory {
     public static SimulationParameters analysisParameters(
             long seed,
             float assimilationFactor,
-            float fertilityMultiplier
+            float fertilityFactor
     ) {
-        if (assimilationFactor < 1 || fertilityMultiplier < 1)
+        if (assimilationFactor < 1 || fertilityFactor < 1)
             throw new IllegalArgumentException("factors must be > 1");
 
-        float k_fertilityFactor = 1.5f;
+        float k_fertilityMultiplier = 1.5f;
 
         return new SimulationParameters(
                 new PrngHolder(seed),
@@ -29,8 +29,8 @@ public class SimulationFactory {
                 5f,
                 0.001f,
                 assimilationFactor,
-                k_fertilityFactor,
-                k_fertilityFactor * fertilityMultiplier
+                k_fertilityMultiplier,
+                k_fertilityMultiplier * fertilityFactor
         );
     }
 

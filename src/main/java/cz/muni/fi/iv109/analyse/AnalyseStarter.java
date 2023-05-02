@@ -11,36 +11,70 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.function.Function;
 
 @SuppressWarnings("SameParameterValue")
 public class AnalyseStarter {
+
+    private static final int GRANULARITY = 2;
+    private static final Disposition DISPOSITION = Disposition.RANDOM;
 
     public static void main(String[] args) throws Exception {
 
         int numberOfCores = Runtime.getRuntime().availableProcessors();
         try(ExecutorService executor = Executors.newFixedThreadPool(numberOfCores)) {
 
-            int granularity = 5;
+            List<Future<ResultEntry[]>> futures = new ArrayList<>(GRANULARITY * GRANULARITY);
+            submitTasks(GRANULARITY).forEach(task -> futures.add(executor.submit(task)));
 
-            List<Future<ResultEntry>> futures = new ArrayList<>(granularity * granularity);
-            submitTasks(granularity).forEach(task -> futures.add(executor.submit(task)));
+            long start = System.currentTimeMillis();
 
-            long l = System.currentTimeMillis();
-
-            ResultEntry[][] results = new ResultEntry[granularity][granularity];
-            for (Future<ResultEntry> future : futures) {
-                ResultEntry resultEntry = future.get();
-
-                int x = resultEntry.resultGrid_x();
-                int y = resultEntry.resultGrid_y();
-
-                results[x][y] = resultEntry;
+            List<ResultEntry[]> results = new ArrayList<>(GRANULARITY * GRANULARITY);
+            for (Future<ResultEntry[]> future : futures) {
+                results.add(future.get());
             }
 
-            System.out.println("total: " + (System.currentTimeMillis() - l) / 1000 + "s");
+            long totalMilliseconds = System.currentTimeMillis() - start;
+            long millisecondPerSimulation = totalMilliseconds / (GRANULARITY * GRANULARITY * SimulationTask.NUMBER_OF_ROUNDS);
+            System.out.println("total " + totalMilliseconds / 1000 + " sec");
+            System.out.println(millisecondPerSimulation + " ms per simulation");
 
-            export(results, Disposition.RANDOM, granularity);
+
+            float[][] averageCultureResults = extractValue(results, GRANULARITY, ResultEntry::averageCulture);
+            export(averageCultureResults, "ac");
+
+            float[][] absoluteAverageCultureResults = extractValue(
+                    results,
+                    GRANULARITY,
+                    resultEntry -> Math.abs(resultEntry.averageCulture())
+            );
+            export(absoluteAverageCultureResults, "aac");
+
+            export(results, "full");
         }
+    }
+
+    private static float[][] extractValue(
+            List<ResultEntry[]> resultsList,
+            int granularity,
+            Function<ResultEntry, Float> valueExtractor
+    ) {
+        float[][] results = new float[granularity][granularity];
+        for (ResultEntry[] resultEntries : resultsList) {
+
+            int x = resultEntries[0].assimilationFactor_x();
+            int y = resultEntries[0].fertilityFactor_y();
+
+            float averageCulturePerRound = 0;
+            for (ResultEntry resultEntry : resultEntries) {
+                averageCulturePerRound += valueExtractor.apply(resultEntry);
+            }
+            averageCulturePerRound /= resultEntries.length;
+
+            results[x][y] = averageCulturePerRound;
+        }
+
+        return results;
     }
 
     /**
@@ -53,6 +87,7 @@ public class AnalyseStarter {
         for (int x = 0; x < granularity; x++) {
             for (int y = 0; y < granularity; y++) {
                 tasks.add(new SimulationTask(
+                        DISPOSITION,
                         1 + x * delta,
                         1 + y * delta,
                         x,
@@ -64,12 +99,36 @@ public class AnalyseStarter {
         return tasks;
     }
 
-    private static void export(ResultEntry[][] results, Disposition disposition, int granularity) throws IOException {
+    /**
+     * export format <br>
+     * assimilation factor - x-axes <br>
+     * fertility factor - y-axes <br>
+     * <br>
+     * &nbsp&nbsp a s s i m i l a t i o n ➔ <br>
+     * f 1;1 &nbsp&nbsp&nbsp&nbsp&nbsp 1.2;1 &nbsp&nbsp&nbsp&nbsp&nbsp 1.4;1 &nbsp&nbsp ...<br>
+     * e 1;1.2 &nbsp 1.2;1.2 &nbsp&nbsp 1.4;1.2 ...<br>
+     * r 1;1.4 &nbsp&nbsp ...<br>
+     * t ... <br>
+     * i <br>
+     * l <br>
+     * i <br>
+     * t <br>
+     * y <br>
+     * 🠗 <br>
+     */
+    private static void export(
+            Object results,
+            String fileNameSuffix
+    ) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
 
-        Files.createDirectories(Path.of("result"));
-        String filename = String.format("%s_%dx%d", disposition.toString().toLowerCase(), granularity, granularity);
+        Path analysePath = Path.of("analyse", "result", "data_test");
+        Files.createDirectories(analysePath);
+        String filename = String.format(
+                "%s_%dx%d_%s", DISPOSITION.toString().toLowerCase(), GRANULARITY, GRANULARITY, fileNameSuffix
+        );
 
-        objectMapper.writeValue(Path.of("result", filename + ".json").toFile(), results);
+        Path resultPath = analysePath.resolve(Path.of(filename + ".json"));
+        objectMapper.writeValue(resultPath.toFile(), results);
     }
 }

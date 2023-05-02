@@ -9,46 +9,48 @@ import cz.muni.fi.iv109.setup.SimulationFactory;
 import java.util.Random;
 import java.util.concurrent.Callable;
 
-class SimulationTask implements Callable<ResultEntry> {
+class SimulationTask implements Callable<ResultEntry[]> {
 
+    public static final int NUMBER_OF_ROUNDS = 4;
     private static final int NUMBER_OF_STEPS = 1500;
+    private static final int NUMBER_OF_AGENTS = 1000;
 
-    private final long seed;
+    private final Disposition disposition;
     private final float assimilationFactor;
-    private final float fertilityMultiplier;
-    private final int resultGrid_x;
-    private final int resultGrid_y;
-
-    private final Simulation simulation;
+    private final float fertilityFactor;
+    private final int assimilationFactor_x;
+    private final int fertilityFactor_y;
 
     public SimulationTask(
+            Disposition disposition,
             float assimilationFactor,
-            float fertilityMultiplier,
-            int resultGrid_x,
-            int resultGrid_y
+            float fertilityFactor,
+            int assimilationFactor_x,
+            int fertilityFactor_y
     ) {
-        this.seed = new Random().nextLong();
-
+        this.disposition = disposition;
         this.assimilationFactor = assimilationFactor;
-        this.fertilityMultiplier = fertilityMultiplier;
-        this.resultGrid_x = resultGrid_x;
-        this.resultGrid_y = resultGrid_y;
-
-        this.simulation = init();
-    }
-
-    private Simulation init() {
-        SimulationParameters parameters = SimulationFactory.analysisParameters(
-                seed,
-                assimilationFactor,
-                fertilityMultiplier
-        );
-        Agent[] agents = SimulationFactory.agents(parameters, 1000, Disposition.RANDOM);
-        return new Simulation(parameters, agents);
+        this.fertilityFactor = fertilityFactor;
+        this.assimilationFactor_x = assimilationFactor_x;
+        this.fertilityFactor_y = fertilityFactor_y;
     }
 
     @Override
-    public ResultEntry call() {
+    public ResultEntry[] call() {
+        Random random = new Random();
+        ResultEntry[] results = new ResultEntry[NUMBER_OF_ROUNDS];
+
+        for (int i = 0; i < NUMBER_OF_ROUNDS; i++) {
+            long seed = random.nextLong();
+            results[i] = simulateOneRound(seed);
+        }
+
+        return results;
+    }
+
+    private ResultEntry simulateOneRound(long seed) {
+        Simulation simulation = simulation(seed);
+
         while (simulation.getStepCounter() < NUMBER_OF_STEPS) {
             simulation.doStep();
         }
@@ -58,10 +60,20 @@ class SimulationTask implements Callable<ResultEntry> {
         return new ResultEntry(
                 seed,
                 assimilationFactor,
-                fertilityMultiplier,
+                fertilityFactor,
                 averageCulture,
-                resultGrid_x,
-                resultGrid_y
+                assimilationFactor_x,
+                fertilityFactor_y
         );
+    }
+
+    private Simulation simulation(long seed) {
+        SimulationParameters parameters = SimulationFactory.analysisParameters(
+                seed,
+                assimilationFactor,
+                fertilityFactor
+        );
+        Agent[] agents = SimulationFactory.agents(parameters, NUMBER_OF_AGENTS, disposition);
+        return new Simulation(parameters, agents);
     }
 }

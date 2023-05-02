@@ -2,7 +2,6 @@ package cz.muni.fi.iv109.core;
 
 import cz.muni.fi.iv109.core.playground.Grid;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -12,11 +11,10 @@ public class Simulation {
     public static final int PLAYGROUND_SIZE = 100;
     public static final int TOTAL_STEPS_OF_LIFE = 300;
 
-    private final Grid grid;
-    @Setter
-    private int stepCounter = 0;
-    private final SimulationParameters parameters;
     private final PrngHolder prngHolder;
+    private final SimulationParameters parameters;
+    private final Grid grid;
+    private int stepCounter = 0;
 
     public Simulation(SimulationParameters parameters, Agent... agents) {
         this.prngHolder = parameters.prngHolder();
