@@ -3,36 +3,53 @@ import numpy as np
 import json
 from scipy.ndimage import gaussian_filter
 
-with open('result/data_test/random_60x60_ac.json', 'r') as f:
-    data = np.array(json.load(f))
 
-data = gaussian_filter(data, sigma=1)
-data = data.transpose()
-fig, ax = plt.subplots()
-im = ax.imshow(data, cmap='RdBu', vmin=-100, vmax=100)
+def plot(mode, extraction):
+    with open(f'result/data_test/{mode}_60x60_{extraction}.json', 'r') as f:
+        data = np.array(json.load(f))
 
-n_steps = 7
+    data = gaussian_filter(data, sigma=1)
+    data = data.transpose()
+    fig, ax = plt.subplots()
 
-x_values = np.linspace(1, 4, n_steps)
-labels = [f"{x:.1f}" for x in x_values]
-ticks = np.linspace(0, data.shape[1] - 1, n_steps).astype(int)
+    cmap = 'RdBu' if extraction == 'ac' else 'magma'
+    vmin = -100 if extraction == 'ac' else 0
+    im = ax.imshow(data, cmap=cmap, vmin=vmin, vmax=100)
 
-ax.xaxis.tick_top()
-ax.xaxis.set_label_position('top')
+    n_steps = 7
 
-ax.set_xticks(ticks)
-ax.set_xticklabels(labels)
+    x_values = np.linspace(1, 4, n_steps)
+    labels = [f"{x:.1f}" for x in x_values]
+    ticks = np.linspace(0, data.shape[1] - 1, n_steps).astype(int)
 
-ax.set_yticks(ticks)
-ax.set_yticklabels(labels)
+    ax.xaxis.tick_top()
+    ax.xaxis.set_label_position('top')
 
-plt.setp(ax.get_xticklabels(), rotation_mode="anchor")
+    ax.set_xticks(ticks)
+    ax.set_xticklabels(labels)
 
-cbar = ax.figure.colorbar(im, ax=ax)
+    ax.set_yticks(ticks)
+    ax.set_yticklabels(labels)
 
-ax.set_title("Random mode")
-ax.set_xlabel("Assimilation factor")
-ax.set_ylabel("Fertility factor")
+    plt.setp(ax.get_xticklabels(), rotation_mode="anchor")
 
-plt.tight_layout()
-plt.show()
+    ax.figure.colorbar(im, ax=ax)
+
+    ax.set_title(f'{mode.capitalize()} mode')
+    ax.set_xlabel("Assimilation factor")
+    ax.set_ylabel("Fertility factor")
+
+    plt.tight_layout()
+    plt.show()
+
+    fig.savefig(f'result/png_submit/{mode}_{extraction}.png', dpi=300)
+
+
+def main(mode):
+    plot(mode, 'ac')
+    plot(mode, 'aac')
+
+
+if __name__ == '__main__':
+    main('random')
+    main('half')
