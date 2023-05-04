@@ -6,10 +6,10 @@ from scipy.ndimage import gaussian_filter
 
 def plot(mode, extraction):
     with open(f'result/data_test/{mode}_60x60_{extraction}.json', 'r') as f:
-        data = np.array(json.load(f))
+        data = np.array(json.load(f)).transpose()
 
     data = gaussian_filter(data, sigma=1)
-    data = data.transpose()
+
     fig, ax = plt.subplots()
 
     cmap = 'RdBu' if extraction == 'ac' else 'magma'
@@ -31,8 +31,6 @@ def plot(mode, extraction):
     ax.set_yticks(ticks)
     ax.set_yticklabels(labels)
 
-    plt.setp(ax.get_xticklabels(), rotation_mode="anchor")
-
     ax.figure.colorbar(im, ax=ax)
 
     ax.set_title(f'{mode.capitalize()} mode')
@@ -53,3 +51,4 @@ def main(mode):
 if __name__ == '__main__':
     main('random')
     main('half')
+    main('circle')
