@@ -33,7 +33,7 @@ def plot(mode, extraction):
 
     ax.figure.colorbar(im, ax=ax)
 
-    ax.set_title(f'{mode.capitalize()} mode')
+    ax.set_title(f'{mode.replace("_", " ").capitalize()} mode')
     ax.set_xlabel("Assimilation factor")
     ax.set_ylabel("Fertility factor")
 
@@ -52,3 +52,5 @@ if __name__ == '__main__':
     main('random')
     main('half')
     main('circle')
+    main('quarter')
+    main('four_lines')

@@ -4,5 +4,7 @@ public enum Disposition {
 
     RANDOM,
     HALF,
+    QUARTER,
+    FOUR_LINES,
     CIRCLE
 }
