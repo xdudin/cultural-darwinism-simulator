@@ -84,6 +84,7 @@ public class SimulationFactory {
             case CIRCLE -> circleAgents(parameters, numberOfAgents);
             case QUARTER -> quarterAgents(parameters, numberOfAgents);
             case FOUR_LINES -> fourLinesAgents(parameters, numberOfAgents);
+            case CELLS -> cellsLinesAgents(parameters, numberOfAgents);
         };
     }
 
@@ -141,6 +142,27 @@ public class SimulationFactory {
             agent.setCulture(
                     x < PLAYGROUND_SIZE / 4f ||
                     (x > PLAYGROUND_SIZE / 4f * 2f && x < PLAYGROUND_SIZE / 4f * 3f)
+                            ? -100
+                            : 100
+            );
+        }
+
+        return agents;
+    }
+
+    private static Agent[] cellsLinesAgents(SimulationParameters parameters, int numberOfAgents) {
+        Agent[] agents = randomAgents(parameters, numberOfAgents);
+
+        for (Agent agent : agents) {
+
+            float x = agent.getPosition().getX();
+            float y = agent.getPosition().getY();
+
+            float cellSize = PLAYGROUND_SIZE / 4f;
+
+            agent.setCulture(
+                    (Math.floor(x / cellSize) % 2 == 0) && (Math.floor(y / cellSize) % 2 == 0) ||
+                    (Math.floor(x / cellSize) % 2 == 1) && (Math.floor(y / cellSize) % 2 == 1)
                             ? -100
                             : 100
             );

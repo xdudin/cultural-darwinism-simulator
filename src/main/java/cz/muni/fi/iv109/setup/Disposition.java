@@ -6,5 +6,6 @@ public enum Disposition {
     HALF,
     QUARTER,
     FOUR_LINES,
+    CELLS,
     CIRCLE
 }

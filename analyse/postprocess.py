@@ -54,3 +54,4 @@ if __name__ == '__main__':
     main('circle')
     main('quarter')
     main('four_lines')
+    main('cells')
