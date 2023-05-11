@@ -122,7 +122,7 @@ public class AnalyseStarter {
     ) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
 
-        Path analysePath = Path.of("analyse", "result", "data_test");
+        Path analysePath = Path.of("analyse", "result", "result_60x60x10", "data_raw_result");
         Files.createDirectories(analysePath);
         String filename = String.format(
                 "%s_%dx%d_%s", DISPOSITION.toString().toLowerCase(), GRANULARITY, GRANULARITY, fileNameSuffix

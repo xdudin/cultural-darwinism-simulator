@@ -1,4 +1,7 @@
 .idea
 target
-result
 .venv
+
+analyse/result/result_60x60x10/*
+!analyse/result/result_60x60x10/png_submit/
+!analyse/result/result_60x60x10/data_raw_result.tar.gz

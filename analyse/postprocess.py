@@ -5,7 +5,7 @@ from scipy.ndimage import gaussian_filter
 
 
 def plot(mode, extraction):
-    with open(f'result/data_test/{mode}_60x60_{extraction}.json', 'r') as f:
+    with open(f'result/result_60x60x10/data_raw_result/{mode}_60x60_{extraction}.json', 'r') as f:
         data = np.array(json.load(f)).transpose()
 
     data = gaussian_filter(data, sigma=1)
@@ -40,7 +40,7 @@ def plot(mode, extraction):
     plt.tight_layout()
     plt.show()
 
-    fig.savefig(f'result/png_submit/{mode}_{extraction}.png', dpi=300)
+    fig.savefig(f'result/result_60x60x10/png_submit/{mode}_{extraction}.png', dpi=300)
 
 
 def main(mode):
