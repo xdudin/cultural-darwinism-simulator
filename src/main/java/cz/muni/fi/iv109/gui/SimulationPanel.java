@@ -17,7 +17,8 @@ public class SimulationPanel extends JPanel implements Runnable {
 
     private static final int FPS = 50;
     private static final long RENDER_INTERVAL = 1_000_000_000 / FPS; // nanoseconds
-    private static final float RELATIVE_AGENT_RADIUS = 2f;
+    private static final float RELATIVE_AGENT_RADIUS = 1.15f;
+    private static final boolean DEBUG = false;
 
     private final float simulationPanelScale;
     private final Simulation simulation;
@@ -27,7 +28,7 @@ public class SimulationPanel extends JPanel implements Runnable {
     public SimulationPanel(int simulationPlaneSize, Simulation simulation) {
         this.simulation = simulation;
 
-        simulationPanelScale = simulationPlaneSize / PLAYGROUND_SIZE;
+        simulationPanelScale = (float) simulationPlaneSize / PLAYGROUND_SIZE;
         simulationThread = new Thread(this);
         agentRadius = (int) (RELATIVE_AGENT_RADIUS * simulationPanelScale);
 
@@ -56,12 +57,19 @@ public class SimulationPanel extends JPanel implements Runnable {
         Graphics2D g2 = (Graphics2D) g;
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        for (Agent agent: simulation.getAgents()) {
+        for (Agent agent: simulation.getGrid().getAgents()) {
             g2.setColor(computeColor(agent.getCulture()));
 
-            int x = (int) (agent.getPosition().getX() * simulationPanelScale - agentRadius / 2);
-            int y = (int) (agent.getPosition().getY() * simulationPanelScale - agentRadius / 2);
-            g2.fillOval(x, y, agentRadius, agentRadius);
+            int x = (int) (agent.getPosition().getX() * simulationPanelScale - agentRadius);
+            int y = (int) (agent.getPosition().getY() * simulationPanelScale - agentRadius);
+            g2.fillOval(x, y, agentRadius * 2, agentRadius * 2);
+
+            if (DEBUG) {
+                int radius = (int) (simulation.getParameters().communicationRadius() * simulationPanelScale);
+                int xr = (int) (agent.getPosition().getX() * simulationPanelScale - radius);
+                int yr = (int) (agent.getPosition().getY() * simulationPanelScale - radius);
+                g2.drawOval(xr, yr, radius * 2, radius * 2);
+            }
         }
 
         g2.dispose();

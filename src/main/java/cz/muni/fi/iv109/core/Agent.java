@@ -1,58 +1,61 @@
 package cz.muni.fi.iv109.core;
 
-import cz.muni.fi.iv109.core.util.Point;
-import cz.muni.fi.iv109.core.util.Vector;
+import cz.muni.fi.iv109.core.playground.Point;
+import cz.muni.fi.iv109.core.playground.PositionUpdatable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 
 import static cz.muni.fi.iv109.core.Simulation.PLAYGROUND_SIZE;
 import static cz.muni.fi.iv109.core.Simulation.TOTAL_STEPS_OF_LIFE;
 
-@Getter
+@Getter @Setter
 @AllArgsConstructor
-public class Agent {
+public class Agent extends PositionUpdatable {
 
     public static final float MAX_CHILDREN = 7f;
+    public static final int[] CHILDREN_CHECKPOINTS = {100, 114, 128, 142, 156, 170, 184};
 
     private Point position;
     private float culture; // number from -100 to 100
     private float direction;
-    private short stepsRemaining = 0;
-    private short age;
-    private short[] childrenDecisionCheckpoint;
-    private byte numberOfChildren;
+    private int stepsRemaining = 0;
+    private int age;
+    private int numberOfChildren;
     private final SimulationParameters parameters;
+    private final PrngHolder prngHolder;
 
-    public Agent(SimulationParameters parameters, Point position, float culture, short age) {
+    public Agent(SimulationParameters parameters, Point position, float culture, int age) {
         if (culture < -100 || culture > 100)
             throw new IllegalArgumentException("not within [-100, 100]");
 
+        this.prngHolder = parameters.prngHolder();
         this.parameters = parameters;
         this.position = position;
         this.culture = culture;
         this.age = age;
-        this.childrenDecisionCheckpoint = computeChildrenDecisionCheckpoints();
     }
 
     public Agent(SimulationParameters parameters) {
-        float x = PrngHolder.randomCoordinate();
-        float y = PrngHolder.randomCoordinate();
-
-        this.parameters = parameters;
-        this.position = new Point(x, y);
-        this.culture = PrngHolder.randomCulture();
-        this.age = PrngHolder.randomAge();
-        this.childrenDecisionCheckpoint = computeChildrenDecisionCheckpoints();
+        this(
+            parameters,
+            new Point(
+                    parameters.prngHolder().randomCoordinate(),
+                    parameters.prngHolder().randomCoordinate()),
+            parameters.prngHolder().randomCulture(),
+            parameters.prngHolder().randomAge()
+        );
     }
 
-    public void reborn(float x, float y, float culture, short age) {
+    public void reborn(float x, float y, float culture, int age) {
         this.culture = culture;
         this.age = age;
         position.setX(x);
         position.setY(y);
         stepsRemaining = 0;
-        childrenDecisionCheckpoint = computeChildrenDecisionCheckpoints();
         numberOfChildren = 0;
+
+        positionUpdate(this);
     }
 
     public void move() {
@@ -73,9 +76,6 @@ public class Agent {
             culture += cultureOfSender * parameters.messageFactor();
         }
 
-//        float mid = (culture + cultureOfSender) / 2;
-//        culture += (mid - culture) * parameters.messageFactor();
-
         if (culture < -100) culture = -100;
         if (culture > 100) culture = 100;
     }
@@ -88,15 +88,15 @@ public class Agent {
         if (age < TOTAL_STEPS_OF_LIFE / 3 || age > TOTAL_STEPS_OF_LIFE / 3 * 2)
             return false;
 
-        for (short checkpoint : childrenDecisionCheckpoint) {
+        for (int checkpoint : CHILDREN_CHECKPOINTS) {
             if (age == checkpoint) {
                 if (culture > 0) { // k-branch
-                    return PrngHolder.randomFloat(0, 1) <
-                            parameters.k_childrenPerFamily() / childrenDecisionCheckpoint.length;
+                    return prngHolder.randomFloat(0, 1) <
+                            parameters.k_fertilityFactor() / CHILDREN_CHECKPOINTS.length;
                 }
                 else { // r-branch
-                    return PrngHolder.randomFloat(0, 1) <
-                            parameters.r_childrenPerFamily() / childrenDecisionCheckpoint.length;
+                    return prngHolder.randomFloat(0, 1) <
+                            parameters.r_fertilityFactor() / CHILDREN_CHECKPOINTS.length;
                 }
             }
         }
@@ -118,24 +118,20 @@ public class Agent {
 
         position.setX(new_x);
         position.setY(new_y);
+
+        positionUpdate(this);
     }
 
     private void resetTarget() {
-        direction = PrngHolder.randomDirection();
-        stepsRemaining = (short) PrngHolder.randomInteger(100, 200);
+        direction = prngHolder.randomDirection();
+        stepsRemaining = prngHolder.randomInteger(100, 200);
     }
 
-    private short[] computeChildrenDecisionCheckpoints() {
-        short[] childrenCheckpoints = new short[Math.round(MAX_CHILDREN)];
+    public void setCulture(float culture) {
+        if (culture < -100 || culture > 100)
+            throw new IllegalArgumentException("not within [-100, 100]");
 
-        short counter = TOTAL_STEPS_OF_LIFE / 3;
-        float interval = counter / MAX_CHILDREN;
-        for (int i = 0; i < childrenCheckpoints.length; i++) {
-            childrenCheckpoints[i] = counter;
-            counter += interval;
-        }
-
-        return childrenCheckpoints;
+        this.culture = culture;
     }
 
     @Override
