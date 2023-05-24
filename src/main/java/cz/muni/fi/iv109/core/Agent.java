@@ -92,11 +92,11 @@ public class Agent extends PositionUpdatable {
             if (age == checkpoint) {
                 if (culture > 0) { // k-branch
                     return prngHolder.randomFloat(0, 1) <
-                            parameters.k_fertilityFactor() / CHILDREN_CHECKPOINTS.length;
+                            parameters.k_fertility() / CHILDREN_CHECKPOINTS.length;
                 }
                 else { // r-branch
                     return prngHolder.randomFloat(0, 1) <
-                            parameters.r_fertilityFactor() / CHILDREN_CHECKPOINTS.length;
+                            parameters.r_fertility() / CHILDREN_CHECKPOINTS.length;
                 }
             }
         }
