@@ -1,5 +1,11 @@
 ## Simulator of cultural rivalry
 
+### Introduction
+
+The problem is inspired by the r/k selection theory. The main idea is to have two 
+population where one has a higher growth rate and the other is a stronger competitor.
+This model is applied to agent interaction.
+
 This environment models the process of cultural assimilation with asymmetric
 strategies. Agents here:
 
@@ -210,6 +216,21 @@ One more conclusion is that with the growth of the parameters, value simulation
 becomes more chaotic and hard to predict. This relation is affected by the
 disposition as well. A greater contact zone leads to a more unpredictable result.
 
+### Possible extensions
+
+Several ideas to extend the environment:
+- Add the possibility of creating borders and/or gates on the simulation board. This
+  meant to represent inter-district/interstate borders where crossing them is limited
+  in one way or both.
+- Make a more precise simulation of humans adopting the near culture. Especially the 
+  observation that younger individuals are more tolerant of the cultural transition 
+  than their older parents. This aspect is currently ignored.
+
+### Codebase of the project
+
+Project is posted on the faculty gitlab as 
+[cultural-darwinism-simulator](https://gitlab.fi.muni.cz/xdudin/cultural-darwinism-simulator)
+
 ### Appendix A - Parameters of the simulation
 
 Name of parameter = default value. Constants are hyper-parameters.
@@ -249,13 +270,3 @@ the number of `RED`s and `BLUE`s are equal.
 | Result heatmap resolution                | `GRANULARITY`      | 2             |
 | Number of repeated runs per heatmap cell | `NUMBER_OF_ROUNDS` | 4             |
 | Starting configuration of agents.        | `DISPOSITION`      | `RANDOM`      |
-
-### Appendix B - Implementation details
-
-#### Agents' reproduction checkpoints
-
-will be added as needed
-
-#### Underlying grid data structure
-
-will be added as needed
