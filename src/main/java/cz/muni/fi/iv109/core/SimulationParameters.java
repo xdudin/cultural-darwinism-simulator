@@ -7,6 +7,6 @@ public record SimulationParameters(
         float communicationRadius,
         float messageFactor,
         float assimilationFactor,
-        float k_fertilityFactor,
-        float r_fertilityFactor
+        float k_fertility,
+        float r_fertility
 ) {}

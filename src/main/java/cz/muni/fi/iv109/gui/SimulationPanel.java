@@ -17,7 +17,7 @@ public class SimulationPanel extends JPanel implements Runnable {
 
     private static final int FPS = 50;
     private static final long RENDER_INTERVAL = 1_000_000_000 / FPS; // nanoseconds
-    private static final float RELATIVE_AGENT_RADIUS = 1.15f;
+    private static final float AGENT_RADIUS = 1.15f;
     private static final boolean DEBUG = false;
 
     private final float simulationPanelScale;
@@ -30,7 +30,7 @@ public class SimulationPanel extends JPanel implements Runnable {
 
         simulationPanelScale = (float) simulationPlaneSize / PLAYGROUND_SIZE;
         simulationThread = new Thread(this);
-        agentRadius = (int) (RELATIVE_AGENT_RADIUS * simulationPanelScale);
+        agentRadius = (int) (AGENT_RADIUS * simulationPanelScale);
 
         this.setPreferredSize(new Dimension(simulationPlaneSize, simulationPlaneSize));
         this.setBackground(Color.BLACK);
