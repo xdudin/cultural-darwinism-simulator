@@ -258,8 +258,8 @@ the number of `RED`s and `BLUE`s are equal.
 | Radius of agent's communication*         | `communicationRadius` | 5             |
 | Culture multiplier in message exchange   | `messageFactor`       | 0.001         |
 | Additional culture multiplier for `BLUE` | `assimilationFactor`  | 3             |
-| `RED` fertility                          | `k_fertility`         | 1.5           |
-| `BLUE` fertility                         | `r_fertility`         | 4.5           |
+| `BLUE` fertility                         | `k_fertility`         | 1.5           |
+| `RED` fertility                          | `r_fertility`         | 4.5           |
 
 #### Analyser mode
 
