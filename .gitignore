@@ -2,6 +2,11 @@
 target
 .venv
 
+*.mp4
+*.pdf
+
+.DS_store
+
 analyse/result/result_60x60x10/*
 !analyse/result/result_60x60x10/png_result
 !analyse/result/result_60x60x10/raw.tar.gz
