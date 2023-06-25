@@ -15,7 +15,7 @@ import static cz.muni.fi.iv109.core.Simulation.PLAYGROUND_SIZE;
 
 public class SimulationPanel extends JPanel implements Runnable {
 
-    private static final int FPS = 50;
+    private static final int FPS = 1;
     private static final long RENDER_INTERVAL = 1_000_000_000 / FPS; // nanoseconds
     private static final float AGENT_RADIUS = 1.15f;
     private static final boolean DEBUG = false;

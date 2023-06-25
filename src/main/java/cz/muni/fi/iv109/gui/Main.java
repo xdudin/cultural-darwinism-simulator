@@ -15,11 +15,11 @@ public class Main {
 
         Simulation simulation = SimulationFactory.referenceSimulation(1000, Disposition.RANDOM);
 
-        initNimbusLookAndFeel();
+        initFlatLightLookAndFeel();
         UIBuilder.buildMainWindow(simulation).startSimulation();
     }
 
-    private static void initNimbusLookAndFeel() {
+    private static void initFlatLightLookAndFeel() {
         try {
             UIManager.setLookAndFeel(new FlatLightLaf());
         } catch (Exception ex) {
