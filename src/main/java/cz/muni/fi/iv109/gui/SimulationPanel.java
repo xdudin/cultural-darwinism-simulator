@@ -10,12 +10,13 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static cz.muni.fi.iv109.core.Simulation.PLAYGROUND_SIZE;
 
 public class SimulationPanel extends JPanel implements Runnable {
 
-    private static final int FPS = 1;
+    private static final int FPS = 10;
     private static final long RENDER_INTERVAL = 1_000_000_000 / FPS; // nanoseconds
     private static final float AGENT_RADIUS = 1.15f;
     private static final boolean DEBUG = false;
@@ -25,8 +26,15 @@ public class SimulationPanel extends JPanel implements Runnable {
     private final Thread simulationThread;
     private final int agentRadius;
 
-    public SimulationPanel(int simulationPlaneSize, Simulation simulation) {
+    private final AtomicBoolean suspendFlag;
+
+    public SimulationPanel(
+            int simulationPlaneSize,
+            Simulation simulation,
+            AtomicBoolean suspendFlag
+    ) {
         this.simulation = simulation;
+        this.suspendFlag = suspendFlag;
 
         simulationPanelScale = (float) simulationPlaneSize / PLAYGROUND_SIZE;
         simulationThread = new Thread(this);
@@ -44,10 +52,26 @@ public class SimulationPanel extends JPanel implements Runnable {
     public void run() {
         long nextRenderTime = System.nanoTime() + RENDER_INTERVAL;
 
+        //noinspection InfiniteLoopStatement
         while (true) {
+            synchronized (suspendFlag) {
+                while (suspendFlag.get()) {
+                    waitInterrupt();
+                    nextRenderTime = System.nanoTime() + RENDER_INTERVAL;
+                }
+            }
+
             simulation.doStep();
             this.repaint();
             nextRenderTime = waitFps(nextRenderTime);
+        }
+    }
+
+    private void waitInterrupt() {
+        try {
+            suspendFlag.wait();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -102,11 +126,11 @@ public class SimulationPanel extends JPanel implements Runnable {
     private long waitFps(long nextRenderTime) {
         long timeToSleep = (nextRenderTime - System.nanoTime()) / 1_000_000;
         if (timeToSleep < 0) timeToSleep = 0;
-        sleep(timeToSleep);
+        sleepInterrupt(timeToSleep);
         return nextRenderTime + RENDER_INTERVAL;
     }
 
-    private void sleep(long millis) {
+    private void sleepInterrupt(long millis) {
         try {
             Thread.sleep(millis);
         } catch (InterruptedException e) {
