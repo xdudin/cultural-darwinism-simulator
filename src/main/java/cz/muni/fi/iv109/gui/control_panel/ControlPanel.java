@@ -14,6 +14,7 @@ import javax.swing.JComboBox;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import java.awt.Dimension;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ControlPanel extends JPanel {
@@ -37,11 +38,25 @@ public class ControlPanel extends JPanel {
     private final JTextArea errorTextArea = new JTextArea();
     private final JButton aboutProject = new JButton("About project");
 
-    private final AtomicBoolean suspendFlag;
-
     public ControlPanel(int preferredHeight, AtomicBoolean suspendFlag) {
-        this.suspendFlag = suspendFlag;
+        placeComponents(preferredHeight);
 
+        Random random = new Random();
+        resetButton.addActionListener(al -> {
+            long newSeed = random.nextLong();
+            seed.setText(String.valueOf(Math.abs(newSeed % 10000000000000L)));
+        });
+
+        startStopButton.addActionListener(al -> {
+            synchronized (suspendFlag) {
+                suspendFlag.set(!suspendFlag.get());
+                startStopButton.setText(getStartStopButtonLabel(startStopButton.getText()));
+                suspendFlag.notify();
+            }
+        });
+    }
+
+    private void placeComponents(int preferredHeight) {
         setLayout(new MigLayout("wrap 2", "[]push[]", ""));
         setPreferredSize(new Dimension(280, preferredHeight));
 
@@ -92,18 +107,6 @@ public class ControlPanel extends JPanel {
         errorTextArea.setLineWrap(true);
 
         add(aboutProject, "span 2, growx");
-
-        resetButton.addActionListener(al -> {
-            System.out.println(ups.getValue());
-        });
-
-        startStopButton.addActionListener(al -> {
-            synchronized (suspendFlag) {
-                suspendFlag.set(!suspendFlag.get());
-                startStopButton.setText(getStartStopButtonLabel(startStopButton.getText()));
-                suspendFlag.notify();
-            }
-        });
     }
 
     private String getStartStopButtonLabel(String label) {
