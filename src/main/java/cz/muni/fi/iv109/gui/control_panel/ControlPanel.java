@@ -36,18 +36,18 @@ public class ControlPanel extends JPanel {
 
     private final JLabel tickCountLabel = new JLabel("Ticks: 0");
     private final JComboBox<Disposition> disposition = new JComboBox<>(new DefaultComboBoxModel<>(Disposition.values()));
-    private final JLongTextField seed = new JLongTextField(1001L);
+    private final JLongTextField seed = new JLongTextField("seed", 4232L);
     private final JButton seedButton = new JButton("Seed");
 
-    private final JLongTextField ups = new JLongTextField(1L, 500L, 50L);
-    private final JLongTextField numberOfAgents = new JLongTextField(1L, 15000L, 1000L);
-    private final JFloatTextField agentRadius = new JFloatTextField(0.3f, 1.5f, 1.15f);
-    private final JFloatTextField communicationRadius = new JFloatTextField(0.25f, 50f, 5f);
-    private final JFloatTextField distancePerStep = new JFloatTextField(0.01f, 0.2f, 0.08f);
-    private final JFloatTextField messageFactor = new JFloatTextField(0.0001f, 0.01f, 0.001f);
-    private final JFloatTextField assimilationFactor = new JFloatTextField(1f, 10f, 3f);
-    private final JFloatTextField k_fertility = new JFloatTextField(0.5f, 3f, 1.5f);
-    private final JFloatTextField r_fertility = new JFloatTextField(3f, 7f, 4.5f);
+    private final JLongTextField ups = new JLongTextField("UPS", 1L, 500L, 50L);
+    private final JLongTextField numberOfAgents = new JLongTextField("Number of agents", 1L, 15000L, 1000L);
+    private final JFloatTextField agentRadius = new JFloatTextField("Agent radius", 0.3f, 1.5f, 1.15f);
+    private final JFloatTextField communicationRadius = new JFloatTextField("Communication radius", 0.5f, 50f, 5f);
+    private final JFloatTextField distancePerStep = new JFloatTextField("Distance per step", 0.01f, 0.2f, 0.08f);
+    private final JFloatTextField messageFactor = new JFloatTextField("Message factor", 0.0001f, 0.01f, 0.001f);
+    private final JFloatTextField assimilationFactor = new JFloatTextField("Assimilation factor", 1f, 10f, 3f);
+    private final JFloatTextField k_fertility = new JFloatTextField("Blue fertility", 0.5f, 3f, 1.5f);
+    private final JFloatTextField r_fertility = new JFloatTextField("Red fertility", 3f, 7f, 4.5f);
 
     private final JTextArea errorTextArea = new JTextArea();
     private final JButton aboutProject = new JButton("About project");
@@ -115,7 +115,7 @@ public class ControlPanel extends JPanel {
             return new Simulation(parameters, agents);
         }
         catch (IllegalArgumentException e) {
-            log.error("User input error", e);
+            log.warn("User input error", e);
             errorTextArea.setText(e.getMessage());
             return null;
         }
@@ -125,6 +125,7 @@ public class ControlPanel extends JPanel {
         synchronized (suspendFlag) {
             simulationPanel.setSimulation(initSimulation());
             simulationPanel.repaint();
+            tickCountLabel.setText("Ticks: 0");
         }
     }
 
@@ -177,7 +178,7 @@ public class ControlPanel extends JPanel {
         add(new JLabel("Message factor"), "growx");
         add(messageFactor, "growx");
 
-        add(errorTextArea, "span 2, hmin 100, hmax 100, wmin 250, wmax 250, pushy, bottom");
+        add(errorTextArea, "span 2, hmin 40, hmax 40, wmin 250, wmax 250, pushy, bottom");
         errorTextArea.setBackground(getBackground());
         errorTextArea.setLineWrap(true);
 

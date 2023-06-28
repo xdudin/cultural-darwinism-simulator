@@ -2,12 +2,12 @@ package cz.muni.fi.iv109.gui.control_panel.number_tf;
 
 public class JLongTextField extends JNumberTextField<Long> {
 
-    public JLongTextField(Long value) {
-        this(Long.MIN_VALUE, Long.MAX_VALUE, value);
+    public JLongTextField(String name, Long value) {
+        this(name, Long.MIN_VALUE, Long.MAX_VALUE, value);
     }
 
-    public JLongTextField(Long min, Long max, Long value) {
-        super("^[0-9]*$", min, max);
+    public JLongTextField(String name, Long min, Long max, Long value) {
+        super(name, "^[0-9]*$", min, max);
         this.setText(String.valueOf(value));
     }
 

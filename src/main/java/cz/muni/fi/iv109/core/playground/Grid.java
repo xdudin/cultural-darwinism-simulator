@@ -17,7 +17,7 @@ public class Grid implements PositionUpdateListener {
 
     public Grid(float communicationRadius, Agent[] agents) {
         if (Simulation.PLAYGROUND_SIZE % (communicationRadius * 2) != 0)
-            throw new IllegalArgumentException("playground size must be divisible by communication radius * 2");
+            throw new IllegalArgumentException("communication radius * 2 must divide \n100 without a remainder");
 
         this.communicationRadius = communicationRadius;
         this.cellSide = (int) (communicationRadius * 2);
