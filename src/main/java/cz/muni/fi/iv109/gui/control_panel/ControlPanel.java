@@ -36,7 +36,7 @@ public class ControlPanel extends JPanel {
 
     private final JLabel tickCountLabel = new JLabel("Ticks: 0");
     private final JComboBox<Disposition> disposition = new JComboBox<>(new DefaultComboBoxModel<>(Disposition.values()));
-    private final JLongTextField seed = new JLongTextField("seed", 4232L);
+    private final JLongTextField seed = new JLongTextField("seed", 0L, 1_000_000_000_000L, 4232L);
     private final JButton seedButton = new JButton("Seed");
 
     private final JLongTextField ups = new JLongTextField("UPS", 1L, 500L, 50L);
@@ -87,7 +87,7 @@ public class ControlPanel extends JPanel {
 
     private void resetSeed() {
         long newSeed = random.nextLong();
-        seed.setText(String.valueOf(Math.abs(newSeed % 10_000_000_000_000L)));
+        seed.setText(String.valueOf(Math.abs(newSeed % 1_000_000_000_000L)));
     }
 
     private Simulation initSimulation() {
