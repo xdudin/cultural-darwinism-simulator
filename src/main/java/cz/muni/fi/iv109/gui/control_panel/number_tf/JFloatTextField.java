@@ -10,7 +10,7 @@ public class JFloatTextField extends JNumberTextField<Float> {
     @Override
     protected boolean withinInterval(String text) {
         float number = Float.parseFloat(text);
-        return min < number && number < max;
+        return min <= number && number <= max;
     }
 
     @Override

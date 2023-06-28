@@ -2,7 +2,6 @@ package cz.muni.fi.iv109.gui;
 
 import cz.muni.fi.iv109.core.Agent;
 import cz.muni.fi.iv109.core.Simulation;
-import lombok.Setter;
 
 import javax.swing.JPanel;
 import java.awt.Color;
@@ -12,6 +11,7 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 
 import static cz.muni.fi.iv109.core.Simulation.PLAYGROUND_SIZE;
 
@@ -27,9 +27,8 @@ public class SimulationPanel extends JPanel implements Runnable {
     private float agentRadius = 1.15f;
     private int agentScaledRadius;
 
-    @Setter
     private Simulation simulation;
-
+    private Consumer<Integer> tickCountCallback;
 
     public SimulationPanel(
             int simulationPlaneSize,
@@ -45,6 +44,11 @@ public class SimulationPanel extends JPanel implements Runnable {
         this.setBackground(Color.BLACK);
     }
 
+    public void setSimulation(Simulation simulation) {
+        if (simulation == null) return;
+        this.simulation = simulation;
+    }
+
     public void setUPS(int UPS) {
         this.UPS = UPS;
         this.renderInterval = 1_000_000_000 / UPS;
@@ -53,6 +57,10 @@ public class SimulationPanel extends JPanel implements Runnable {
     public void setAgentRadius(float agentRadius) {
         this.agentRadius = agentRadius;
         this.agentScaledRadius = (int) (agentRadius * simulationPanelScale);
+    }
+
+    public void setTickCountCallback(Consumer<Integer> tickCountCallback) {
+        this.tickCountCallback = tickCountCallback;
     }
 
     public void startSimulationThread() {
@@ -73,6 +81,7 @@ public class SimulationPanel extends JPanel implements Runnable {
             }
 
             simulation.doStep();
+            tickCountCallback.accept(simulation.getStepCounter());
             this.repaint();
             nextRenderTime = waitFps(nextRenderTime);
         }

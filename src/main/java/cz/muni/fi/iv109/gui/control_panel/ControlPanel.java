@@ -1,36 +1,46 @@
 package cz.muni.fi.iv109.gui.control_panel;
 
 
+import cz.muni.fi.iv109.core.Agent;
+import cz.muni.fi.iv109.core.PrngHolder;
 import cz.muni.fi.iv109.core.Simulation;
+import cz.muni.fi.iv109.core.SimulationParameters;
 import cz.muni.fi.iv109.gui.SimulationPanel;
 import cz.muni.fi.iv109.gui.control_panel.number_tf.JFloatTextField;
-import cz.muni.fi.iv109.gui.control_panel.number_tf.JIntegerTextField;
+import cz.muni.fi.iv109.gui.control_panel.number_tf.JLongTextField;
 import cz.muni.fi.iv109.setup.Disposition;
 import cz.muni.fi.iv109.setup.SimulationFactory;
+import lombok.extern.slf4j.Slf4j;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JComboBox;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import java.awt.Dimension;
+import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+@Slf4j
 public class ControlPanel extends JPanel {
 
+    private static final Random random = new Random();
+
     private final JButton resetButton = new JButton("Reset");
+    private final JButton restartButton = new JButton("Restart");
     private final JButton startStopButton = new JButton("Start");
 
+    private final JLabel tickCountLabel = new JLabel("Ticks: 0");
     private final JComboBox<Disposition> disposition = new JComboBox<>(new DefaultComboBoxModel<>(Disposition.values()));
-    private final JIntegerTextField seed = new JIntegerTextField(1001);
+    private final JLongTextField seed = new JLongTextField(1001L);
     private final JButton seedButton = new JButton("Seed");
 
-    private final JIntegerTextField ups = new JIntegerTextField(1, 500, 50);
-    private final JIntegerTextField numberOfAgents = new JIntegerTextField(1, 15000, 1000);
+    private final JLongTextField ups = new JLongTextField(1L, 500L, 50L);
+    private final JLongTextField numberOfAgents = new JLongTextField(1L, 15000L, 1000L);
     private final JFloatTextField agentRadius = new JFloatTextField(0.3f, 1.5f, 1.15f);
     private final JFloatTextField communicationRadius = new JFloatTextField(0.25f, 50f, 5f);
     private final JFloatTextField distancePerStep = new JFloatTextField(0.01f, 0.2f, 0.08f);
@@ -42,26 +52,28 @@ public class ControlPanel extends JPanel {
     private final JTextArea errorTextArea = new JTextArea();
     private final JButton aboutProject = new JButton("About project");
 
+    private final AtomicBoolean suspendFlag;
+    private final SimulationPanel simulationPanel;
+
     public ControlPanel(
             int preferredHeight,
             AtomicBoolean suspendFlag,
             SimulationPanel simulationPanel
     ) {
+        this.suspendFlag = suspendFlag;
+        this.simulationPanel = simulationPanel;
+
         placeComponents(preferredHeight);
         simulationPanel.setSimulation(initSimulation());
         simulationPanel.startSimulationThread();
+        simulationPanel.setTickCountCallback(tick -> tickCountLabel.setText("Ticks: " + tick));
 
-        Random random = new Random();
-        seedButton.addActionListener(al -> {
-            long newSeed = random.nextLong();
-            seed.setText(String.valueOf(Math.abs(newSeed % 10_000_000_000_000L)));
-        });
+        seedButton.addActionListener(al -> resetSeed());
+        restartButton.addActionListener(al -> restartSimulation());
 
         resetButton.addActionListener(al -> {
-            synchronized (suspendFlag) {
-                simulationPanel.setSimulation(initSimulation());
-                simulationPanel.repaint();
-            }
+            resetSeed();
+            restartSimulation();
         });
 
         startStopButton.addActionListener(al -> {
@@ -73,16 +85,58 @@ public class ControlPanel extends JPanel {
         });
     }
 
+    private void resetSeed() {
+        long newSeed = random.nextLong();
+        seed.setText(String.valueOf(Math.abs(newSeed % 10_000_000_000_000L)));
+    }
+
     private Simulation initSimulation() {
-        return SimulationFactory.referenceSimulation(1000, Disposition.RANDOM);
+        try {
+            errorTextArea.setText("");
+            SimulationParameters parameters = new SimulationParameters(
+                    new PrngHolder(seed.getValue()),
+                    distancePerStep.getValue(),
+                    communicationRadius.getValue(),
+                    messageFactor.getValue(),
+                    assimilationFactor.getValue(),
+                    k_fertility.getValue(),
+                    r_fertility.getValue()
+            );
+
+            Agent[] agents = SimulationFactory.agents(
+                    parameters,
+                    Math.toIntExact(numberOfAgents.getValue()),
+                    (Disposition) Objects.requireNonNull(disposition.getSelectedItem())
+            );
+
+            simulationPanel.setUPS(Math.toIntExact(ups.getValue()));
+            simulationPanel.setAgentRadius(agentRadius.getValue());
+
+            return new Simulation(parameters, agents);
+        }
+        catch (IllegalArgumentException e) {
+            log.error("User input error", e);
+            errorTextArea.setText(e.getMessage());
+            return null;
+        }
+    }
+
+    private void restartSimulation() {
+        synchronized (suspendFlag) {
+            simulationPanel.setSimulation(initSimulation());
+            simulationPanel.repaint();
+        }
     }
 
     private void placeComponents(int preferredHeight) {
         setLayout(new MigLayout("wrap 2", "[]push[]", ""));
         setPreferredSize(new Dimension(280, preferredHeight));
 
-        add(resetButton, "growx");
+        add(restartButton, "growx");
         add(startStopButton, "growx");
+
+        add(resetButton, "growx");
+        add(tickCountLabel, "growx");
 
         add(new JSeparator(), "span 2, growx");
 
