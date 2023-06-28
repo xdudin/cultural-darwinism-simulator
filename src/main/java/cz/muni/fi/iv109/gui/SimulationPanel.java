@@ -2,6 +2,7 @@ package cz.muni.fi.iv109.gui;
 
 import cz.muni.fi.iv109.core.Agent;
 import cz.muni.fi.iv109.core.Simulation;
+import lombok.Setter;
 
 import javax.swing.JPanel;
 import java.awt.Color;
@@ -16,32 +17,42 @@ import static cz.muni.fi.iv109.core.Simulation.PLAYGROUND_SIZE;
 
 public class SimulationPanel extends JPanel implements Runnable {
 
-    private static final int UPS = 10;
-    private static final long RENDER_INTERVAL = 1_000_000_000 / UPS; // nanoseconds
-    private static final float AGENT_RADIUS = 1.15f;
     private static final boolean DEBUG = false;
-
     private final float simulationPanelScale;
-    private final Simulation simulation;
     private final Thread simulationThread;
-    private final int agentRadius;
-
     private final AtomicBoolean suspendFlag;
+
+    private int UPS = 50;
+    private long renderInterval = 1_000_000_000 / UPS; // nanoseconds
+    private float agentRadius = 1.15f;
+    private int agentScaledRadius;
+
+    @Setter
+    private Simulation simulation;
+
 
     public SimulationPanel(
             int simulationPlaneSize,
-            Simulation simulation,
             AtomicBoolean suspendFlag
     ) {
-        this.simulation = simulation;
         this.suspendFlag = suspendFlag;
 
         simulationPanelScale = (float) simulationPlaneSize / PLAYGROUND_SIZE;
         simulationThread = new Thread(this);
-        agentRadius = (int) (AGENT_RADIUS * simulationPanelScale);
+        agentScaledRadius = (int) (agentRadius * simulationPanelScale);
 
         this.setPreferredSize(new Dimension(simulationPlaneSize, simulationPlaneSize));
         this.setBackground(Color.BLACK);
+    }
+
+    public void setUPS(int UPS) {
+        this.UPS = UPS;
+        this.renderInterval = 1_000_000_000 / UPS;
+    }
+
+    public void setAgentRadius(float agentRadius) {
+        this.agentRadius = agentRadius;
+        this.agentScaledRadius = (int) (agentRadius * simulationPanelScale);
     }
 
     public void startSimulationThread() {
@@ -50,14 +61,14 @@ public class SimulationPanel extends JPanel implements Runnable {
 
     @Override
     public void run() {
-        long nextRenderTime = System.nanoTime() + RENDER_INTERVAL;
+        long nextRenderTime = System.nanoTime() + renderInterval;
 
         //noinspection InfiniteLoopStatement
         while (true) {
             synchronized (suspendFlag) {
                 while (suspendFlag.get()) {
                     waitInterrupt();
-                    nextRenderTime = System.nanoTime() + RENDER_INTERVAL;
+                    nextRenderTime = System.nanoTime() + renderInterval;
                 }
             }
 
@@ -84,9 +95,9 @@ public class SimulationPanel extends JPanel implements Runnable {
         for (Agent agent: simulation.getGrid().getAgents()) {
             g2.setColor(computeColor(agent.getCulture()));
 
-            int x = (int) (agent.getPosition().getX() * simulationPanelScale - agentRadius);
-            int y = (int) (agent.getPosition().getY() * simulationPanelScale - agentRadius);
-            g2.fillOval(x, y, agentRadius * 2, agentRadius * 2);
+            int x = (int) (agent.getPosition().getX() * simulationPanelScale - agentScaledRadius);
+            int y = (int) (agent.getPosition().getY() * simulationPanelScale - agentScaledRadius);
+            g2.fillOval(x, y, agentScaledRadius * 2, agentScaledRadius * 2);
 
             if (DEBUG) {
                 int radius = (int) (simulation.getParameters().communicationRadius() * simulationPanelScale);
@@ -127,7 +138,7 @@ public class SimulationPanel extends JPanel implements Runnable {
         long timeToSleep = (nextRenderTime - System.nanoTime()) / 1_000_000;
         if (timeToSleep < 0) timeToSleep = 0;
         sleepInterrupt(timeToSleep);
-        return nextRenderTime + RENDER_INTERVAL;
+        return nextRenderTime + renderInterval;
     }
 
     private void sleepInterrupt(long millis) {

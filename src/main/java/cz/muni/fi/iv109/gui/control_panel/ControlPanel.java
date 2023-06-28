@@ -1,9 +1,12 @@
 package cz.muni.fi.iv109.gui.control_panel;
 
 
+import cz.muni.fi.iv109.core.Simulation;
+import cz.muni.fi.iv109.gui.SimulationPanel;
 import cz.muni.fi.iv109.gui.control_panel.number_tf.JFloatTextField;
 import cz.muni.fi.iv109.gui.control_panel.number_tf.JIntegerTextField;
 import cz.muni.fi.iv109.setup.Disposition;
+import cz.muni.fi.iv109.setup.SimulationFactory;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.DefaultComboBoxModel;
@@ -24,6 +27,7 @@ public class ControlPanel extends JPanel {
 
     private final JComboBox<Disposition> disposition = new JComboBox<>(new DefaultComboBoxModel<>(Disposition.values()));
     private final JIntegerTextField seed = new JIntegerTextField(1001);
+    private final JButton seedButton = new JButton("Seed");
 
     private final JIntegerTextField ups = new JIntegerTextField(1, 500, 50);
     private final JIntegerTextField numberOfAgents = new JIntegerTextField(1, 15000, 1000);
@@ -38,13 +42,26 @@ public class ControlPanel extends JPanel {
     private final JTextArea errorTextArea = new JTextArea();
     private final JButton aboutProject = new JButton("About project");
 
-    public ControlPanel(int preferredHeight, AtomicBoolean suspendFlag) {
+    public ControlPanel(
+            int preferredHeight,
+            AtomicBoolean suspendFlag,
+            SimulationPanel simulationPanel
+    ) {
         placeComponents(preferredHeight);
+        simulationPanel.setSimulation(initSimulation());
+        simulationPanel.startSimulationThread();
 
         Random random = new Random();
-        resetButton.addActionListener(al -> {
+        seedButton.addActionListener(al -> {
             long newSeed = random.nextLong();
-            seed.setText(String.valueOf(Math.abs(newSeed % 10000000000000L)));
+            seed.setText(String.valueOf(Math.abs(newSeed % 10_000_000_000_000L)));
+        });
+
+        resetButton.addActionListener(al -> {
+            synchronized (suspendFlag) {
+                simulationPanel.setSimulation(initSimulation());
+                simulationPanel.repaint();
+            }
         });
 
         startStopButton.addActionListener(al -> {
@@ -56,6 +73,10 @@ public class ControlPanel extends JPanel {
         });
     }
 
+    private Simulation initSimulation() {
+        return SimulationFactory.referenceSimulation(1000, Disposition.RANDOM);
+    }
+
     private void placeComponents(int preferredHeight) {
         setLayout(new MigLayout("wrap 2", "[]push[]", ""));
         setPreferredSize(new Dimension(280, preferredHeight));
@@ -65,7 +86,7 @@ public class ControlPanel extends JPanel {
 
         add(new JSeparator(), "span 2, growx");
 
-        add(new JLabel("Seed"));
+        add(seedButton, "growx");
         add(seed, "growx");
 
         add(new JLabel("Disposition"), "growx");

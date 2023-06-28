@@ -1,6 +1,5 @@
 package cz.muni.fi.iv109.gui;
 
-import cz.muni.fi.iv109.core.Simulation;
 import cz.muni.fi.iv109.gui.control_panel.ControlPanel;
 
 import java.awt.Dimension;
@@ -10,20 +9,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class UIBuilder {
 
-    public static MainWindow buildMainWindow(Simulation simulation) {
+    public static void buildMainWindow() {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int simulationPlaneSize = (int) (screenSize.getHeight() * 0.8);
         AtomicBoolean suspendFlag = new AtomicBoolean(true);
 
-        SimulationPanel simulationPanel = new SimulationPanel(simulationPlaneSize, simulation, suspendFlag);
-        ControlPanel controlPanel = new ControlPanel(simulationPlaneSize, suspendFlag);
+        SimulationPanel simulationPanel = new SimulationPanel(simulationPlaneSize, suspendFlag);
+        ControlPanel controlPanel = new ControlPanel(simulationPlaneSize, suspendFlag, simulationPanel);
 
         MainWindow mainWindow = new MainWindow(simulationPanel, controlPanel);
 
         Point cornerLocation = calculateCornerLocation(screenSize, mainWindow.getSize());
         mainWindow.setLocation(cornerLocation);
-
-        return mainWindow;
     }
 
     private static Point calculateCornerLocation(Dimension screenSize, Dimension mainWindowSize) {
