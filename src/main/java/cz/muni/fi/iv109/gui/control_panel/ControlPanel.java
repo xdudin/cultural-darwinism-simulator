@@ -20,7 +20,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
+import java.awt.Desktop;
 import java.awt.Dimension;
+import java.net.URI;
 import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -83,6 +85,21 @@ public class ControlPanel extends JPanel {
                 suspendFlag.notify();
             }
         });
+
+        aboutProject.addActionListener(
+                al -> browser("https://gitlab.fi.muni.cz/xdudin/cultural-darwinism-simulator")
+        );
+    }
+
+    public void browser(String url) {
+        try {
+            Desktop desktop = Desktop.getDesktop();
+            desktop.browse(new URI(url));
+        }
+        catch (Exception e) {
+            log.warn("User input error", e);
+            errorTextArea.setText(e.getMessage());
+        }
     }
 
     private void resetSeed() {
