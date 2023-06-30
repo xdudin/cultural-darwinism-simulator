@@ -1,5 +1,7 @@
 ## Simulator of cultural rivalry
 
+This repository is a mirror of my university project.
+
 ### Introduction
 
 The problem is inspired by the r/k selection theory. The main idea is to have two 
