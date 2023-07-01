@@ -84,7 +84,7 @@ Messaging is the key part of the simulation. Two different approaches were teste
 
 - Receiving and sending agents adjust their `culture` to the average of both
   communicating parts. This strategy leads to the situation when all agents on the
-  board gravitate towards the `culture` = 0, or it wipes out any population deference.  
+  board gravitate towards the `culture` = 0, or it wipes out any population difference.  
   This approach was rejected because it weakly corresponds to reality.
 
 - Receiving agent adds some fraction of the sender's `culture` to its own. This
@@ -214,7 +214,7 @@ of agents, but exclusively by their interaction.
   the group did not have an optimally minimal contact zone) they will be assimilated
   by `BLUE`s.
 
-One more conclusion is that with the growth of the parameters, value simulation
+One more conclusion is that with the growth of the parameters value, simulation
 becomes more chaotic and hard to predict. This relation is affected by the
 disposition as well. A greater contact zone leads to a more unpredictable result.
 
@@ -223,7 +223,7 @@ disposition as well. A greater contact zone leads to a more unpredictable result
 Several ideas to extend the environment:
 - Add the possibility of creating borders and/or gates on the simulation board. This
   meant to represent inter-district/interstate borders where crossing them is limited
-  in one way or both.
+  in one direction or both.
 - Make a more precise simulation of humans adopting the near culture. Especially the 
   observation that younger individuals are more tolerant of the cultural transition 
   than their older parents. This aspect is currently ignored.
